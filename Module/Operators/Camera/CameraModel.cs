@@ -24,7 +24,7 @@ namespace OpencvsharpModule.Models
     {
         public CameraModel(IEventAggregator ea, IContainerExtension container)
         {
-            gocw = container.Resolve<opencvcli.GOCW>();
+           // gocw = container.Resolve<opencvcli.GOCW>();
 
             Cameras = new MVSCameras();
             // Cameras = new BaslerCameras();

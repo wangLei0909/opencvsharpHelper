@@ -1,5 +1,6 @@
 ﻿using opencvsharphelper.Views;
 using Prism.Ioc;
+using Prism.Modularity;
 using System.Windows;
 
 namespace opencvsharphelper
@@ -16,7 +17,13 @@ namespace opencvsharphelper
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+        }
 
+        protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
+        {
+            _ = moduleCatalog.AddModule<ModuleCore.CoreModule>();
+
+            _ = moduleCatalog.AddModule<OpencvsharpModule.ModuleOpenCVSharp>();
         }
     }
 }

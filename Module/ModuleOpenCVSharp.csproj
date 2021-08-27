@@ -16,6 +16,10 @@
     <PackageReference Include="ZXing.Net" Version="0.16.6" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ModuleCore\ModuleCore.csproj" />
+    <ProjectReference Include="..\MvvmTextEditor\MvvmTextEditor.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Basler.Pylon">
       <HintPath>Common\Basler.Pylon.dll</HintPath>
     </Reference>

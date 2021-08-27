@@ -1,0 +1,125 @@
+﻿<UserControl
+    x:Class="ModuleCore.Views.LoginView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ModuleCore.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:viewmodels="clr-namespace:ModuleCore.ViewModels"
+    Width="400"
+    Height="240"
+    d:Background="White"
+    d:DataContext="{d:DesignInstance Type=viewmodels:LoginViewModel}"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    mc:Ignorable="d">
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="16"
+                Text="权限登录" />
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="7*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="16"
+                Text="用户:" />
+            <ComboBox
+                Grid.Column="1"
+                Width="200"
+                Margin="10,0,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Cursor="IBeam"
+                DisplayMemberPath="Name"
+                FontSize="16"
+                ItemsSource="{Binding Model.UserList}"
+                SelectedValue="{Binding Model.Name}"
+                SelectedValuePath="Name" />
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="7*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="16"
+                Text="密码:" />
+            <PasswordBox
+                x:Name="passwordBox"
+                Grid.Column="1"
+                Width="200"
+                Margin="10,0,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Cursor="IBeam"
+                FontSize="22" />
+        </Grid>
+        <Grid Grid.Row="3">
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <TextBlock
+                    d:Text="无效密码"
+                    FontSize="16"
+                    Foreground="Red"
+                    Text="{Binding Msg}" />
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Button
+                Width="80"
+                Height="28"
+                HorizontalAlignment="Center"
+                Background="#5cb85c"
+                Command="{Binding LoginCommand}"
+                CommandParameter="{Binding ElementName=passwordBox}"
+                Content="登录"
+                FontSize="12"
+                Foreground="White" Cursor="Hand" />
+
+            <Button
+                Grid.Column="1"
+                Width="80"
+                Height="28"
+                HorizontalAlignment="Center"
+                Background="#b85c5c"
+                Command="{Binding CloseDialogCommand}"
+                CommandParameter="false"
+                Content="退出"
+                FontSize="12"
+                Foreground="White" Cursor="Hand" />
+            <Button
+                Grid.Column="2"
+                Width="80"
+                Height="28"
+                HorizontalAlignment="Center"
+                Background="#5c5cb8"
+                Command="{Binding CloseDialogCommand}"
+                CommandParameter="manage"
+                Content="管理"
+                Cursor="Hand"
+                FontSize="12"
+                Foreground="White" />
+        </Grid>
+    </Grid>
+</UserControl>

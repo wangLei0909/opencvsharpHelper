@@ -6,7 +6,7 @@ using Prism.Modularity;
 
 namespace OpencvsharpModule
 {
-    public class Opencvsharphelper : IModule
+    public class ModuleOpenCVSharp : IModule
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {
@@ -32,7 +32,7 @@ namespace OpencvsharpModule
             containerRegistry.RegisterSingleton<CameraModel>();
             containerRegistry.RegisterSingleton<ImagePool>();
             containerRegistry.RegisterSingleton<DataPool>();
-            containerRegistry.RegisterSingleton<opencvcli.GOCW>();
+            //containerRegistry.RegisterSingleton<opencvcli.GOCW>();
             containerRegistry.RegisterSingleton<RoslynEditorModel>();
 
             containerRegistry.RegisterDialog<CalibrateView, ViewModels.CalibrateViewModel>();

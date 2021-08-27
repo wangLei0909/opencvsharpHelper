@@ -1,0 +1,166 @@
+﻿<UserControl
+    x:Class="ModuleCore.UserControls.ImageEdit"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ModuleCore.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DataContext="{Binding}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    ClipToBounds="True"
+    mc:Ignorable="d">
+    <UserControl.Background>
+        <DrawingBrush
+            TileMode="Tile"
+            Viewport="0,0,20,20"
+            ViewportUnits="Absolute">
+            <DrawingBrush.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing>
+                            <GeometryDrawing.Geometry>
+                                <RectangleGeometry Rect="0,0,20,20" />
+                            </GeometryDrawing.Geometry>
+                            <GeometryDrawing.Brush>
+                                <SolidColorBrush Color="#ff000000" />
+                            </GeometryDrawing.Brush>
+                        </GeometryDrawing>
+
+                        <GeometryDrawing>
+                            <GeometryDrawing.Geometry>
+                                <RectangleGeometry Rect="0,0,10,10" />
+                            </GeometryDrawing.Geometry>
+                            <GeometryDrawing.Brush>
+                                <SolidColorBrush Color="#ff222222" />
+                            </GeometryDrawing.Brush>
+                        </GeometryDrawing>
+
+                        <GeometryDrawing>
+                            <GeometryDrawing.Geometry>
+                                <RectangleGeometry Rect="10,10,10,10" />
+                            </GeometryDrawing.Geometry>
+                            <GeometryDrawing.Brush>
+                                <SolidColorBrush Color="#ff222222" />
+                            </GeometryDrawing.Brush>
+                        </GeometryDrawing>
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+    </UserControl.Background>
+    <Grid ClipToBounds="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+        <Grid Panel.ZIndex="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Border
+                Grid.ColumnSpan="3"
+                Background="Black"
+                ClipToBounds="True"
+                Opacity="0.5" />
+            <StackPanel Orientation="Horizontal">
+
+                <Image
+                    Width="20"
+                    Height="20"
+                    Margin="10,5,5,5"
+                    Cursor="Hand"
+                    MouseDown="DrawRect"
+                    Opacity="0.6"
+                    Source="/ModuleCore;component/UserControls/ICON/rect.png"
+                    ToolTip="画矩形" />
+                <Image
+                    Width="20"
+                    Height="20"
+                    Margin="5,5"
+                    Cursor="Hand"
+                    MouseDown="DrawRotateRect"
+                    Opacity="0.6"
+                    Source="/ModuleCore;component/UserControls/ICON/rotaterect.png"
+                    ToolTip="画旋转矩形" />
+            </StackPanel>
+            <StackPanel
+                Grid.Column="2"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+            </StackPanel>
+
+
+        </Grid>
+        <Grid Grid.Row="1" Panel.ZIndex="0">
+            <Viewbox>
+                <Grid Width="{Binding ElementName=img1, Path=ActualWidth}" Height="{Binding ElementName=img1, Path=ActualHeight}">
+                    <Canvas
+                        Name="mainBox1"
+                        MouseDown="Img_MouseDown1"
+                        MouseLeave="Img_MouseLeave1"
+                        MouseMove="Img_MouseMove1"
+                        MouseUp="Img_MouseUp1"
+                        MouseWheel="Canvas_MouseWheel">
+                        <Canvas.RenderTransform>
+                            <TransformGroup>
+                                <MatrixTransform x:Name="matrix" />
+                            </TransformGroup>
+                        </Canvas.RenderTransform>
+                        <Image Name="img1" RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                    </Canvas>
+
+                </Grid>
+            </Viewbox>
+        </Grid>
+        <Grid Grid.Row="2" Panel.ZIndex="1">
+            <Border
+                Background="Black"
+                ClipToBounds="True"
+                Opacity="0.5" />
+            <StackPanel Orientation="Horizontal">
+                <TextBlock
+                    Name="rate"
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    Foreground="Wheat"
+                    Text="100%" />
+                <Image
+                    Width="20"
+                    Height="20"
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Left"
+                    Cursor="Hand"
+                    MouseDown="RecoverMatrix"
+                    Opacity="0.6"
+                    Source="/ModuleCore;component/UserControls/ICON/full.png"
+                    ToolTip="全部显示" />
+            </StackPanel>
+            <StackPanel
+                Grid.Column="2"
+                HorizontalAlignment="Center"
+                Orientation="Horizontal">
+                <TextBlock
+                    Name="mousex"
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    Foreground="Wheat"
+                    Text="0" />
+                <TextBlock
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    Foreground="Wheat"
+                    Text=":" />
+                <TextBlock
+                    Name="mousey"
+                    Margin="5,0,15,0"
+                    VerticalAlignment="Center"
+                    Foreground="Wheat"
+                    Text="0" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

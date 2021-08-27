@@ -1,0 +1,104 @@
+﻿<UserControl
+    x:Class="ModuleCore.UserControls.ImageView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ModuleCore.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DataContext="{Binding}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.Background>
+        <DrawingBrush
+            TileMode="Tile"
+            Viewport="0,0,20,20"
+            ViewportUnits="Absolute">
+            <DrawingBrush.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing>
+                            <GeometryDrawing.Geometry>
+                                <RectangleGeometry Rect="0,0,20,20" />
+                            </GeometryDrawing.Geometry>
+                            <GeometryDrawing.Brush>
+                                <SolidColorBrush Color="#ff000000" />
+                            </GeometryDrawing.Brush>
+                        </GeometryDrawing>
+
+                        <GeometryDrawing>
+                            <GeometryDrawing.Geometry>
+                                <RectangleGeometry Rect="0,0,10,10" />
+                            </GeometryDrawing.Geometry>
+                            <GeometryDrawing.Brush>
+                                <SolidColorBrush Color="#ff222222" />
+                            </GeometryDrawing.Brush>
+                        </GeometryDrawing>
+
+                        <GeometryDrawing>
+                            <GeometryDrawing.Geometry>
+                                <RectangleGeometry Rect="10,10,10,10" />
+                            </GeometryDrawing.Geometry>
+                            <GeometryDrawing.Brush>
+                                <SolidColorBrush Color="#ff222222" />
+                            </GeometryDrawing.Brush>
+                        </GeometryDrawing>
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+    </UserControl.Background>
+    <Grid ClipToBounds="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid Panel.ZIndex="1">
+            <Border
+                Background="Black"
+                ClipToBounds="True"
+                Opacity="0.5" />
+            <StackPanel Orientation="Horizontal">
+
+                <Image
+                    Margin="5"
+                    Cursor="Hand"
+                    MouseDown="RecoverMatrix"
+                    Opacity="0.6"
+                    Source="/ModuleCore;component/UserControls/ICON/full.png"
+                    ToolTip="全部显示" />
+
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1" Panel.ZIndex="0">
+            <Viewbox>
+                <Viewbox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem
+                            Name="MenuItem1"
+                            Click="Recover"
+                            Header="恢复" />
+                    </ContextMenu>
+                </Viewbox.ContextMenu>
+
+                <Grid Width="{Binding ElementName=img1, Path=ActualWidth}" Height="{Binding ElementName=img1, Path=ActualHeight}">
+                    <Canvas
+                        Name="mainBox1"
+                        MouseDown="Img_MouseDown1"
+                        MouseLeave="Img_MouseLeave1"
+                        MouseMove="Img_MouseMove1"
+                        MouseUp="Img_MouseUp1"
+                        MouseWheel="Canvas_MouseWheel">
+                        <Canvas.RenderTransform>
+                            <TransformGroup>
+                                <MatrixTransform x:Name="matrix" />
+                            </TransformGroup>
+                        </Canvas.RenderTransform>
+                        <Image Name="img1" RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                    </Canvas>
+
+                </Grid>
+            </Viewbox>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,78 @@
+﻿<UserControl
+    x:Class="ModuleCore.UserControls.RangeSlider"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Name="UC_Arrange"
+    Loaded="UC_Arrange_Loaded"
+    mc:Ignorable="d">
+    <StackPanel Height="{Binding ElementName=UC_Arrange, Path=SilderHeight}" Orientation="Horizontal">
+
+        <Border
+            Width="60"
+            Height="20"
+            BorderBrush="Gray"
+            BorderThickness="1">
+            <TextBlock
+                Margin="0,3"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="{Binding ElementName=SL_Bat1, Path=Value}" />
+        </Border>
+        <Canvas Width="{Binding ElementName=UC_Arrange, Path=SilderWidth}" Margin="0,0,5,0">
+            <Slider
+                Name="SL_Bat1"
+                Width="{Binding ElementName=UC_Arrange, Path=SilderWidth}"
+                Margin="2"
+                VerticalAlignment="Center"
+                FocusVisualStyle="{x:Null}"
+                IsMoveToPointEnabled="True"
+                IsSelectionRangeEnabled="True"
+                IsSnapToTickEnabled="True"
+                Maximum="{Binding ElementName=UC_Arrange, Path=Maximum}"
+                Minimum="{Binding ElementName=UC_Arrange, Path=Minimum}"
+                SelectionEnd="{Binding ElementName=UC_Arrange, Path=EndValue}"
+                SelectionStart="{Binding ElementName=UC_Arrange, Path=StartValue}"
+                TickFrequency="{Binding ElementName=UC_Arrange, Path=SliderTickFrequency}"
+                TickPlacement="BottomRight"
+                ValueChanged="SL_Bat1_ValueChanged"
+                Value="{Binding ElementName=UC_Arrange, Path=StartValue}">
+                <Slider.Clip>
+                    <RectangleGeometry Rect="{Binding ElementName=UC_Arrange, Path=StartRect}" />
+                </Slider.Clip>
+            </Slider>
+            <Slider
+                Name="SL_Bat2"
+                Width="{Binding ElementName=UC_Arrange, Path=SilderWidth}"
+                Margin="2"
+                VerticalAlignment="Center"
+                FocusVisualStyle="{x:Null}"
+                IsMoveToPointEnabled="True"
+                IsSelectionRangeEnabled="True"
+                IsSnapToTickEnabled="True"
+                Maximum="{Binding ElementName=UC_Arrange, Path=Maximum}"
+                Minimum="{Binding ElementName=UC_Arrange, Path=Minimum}"
+                SelectionEnd="{Binding ElementName=UC_Arrange, Path=EndValue}"
+                SelectionStart="{Binding ElementName=UC_Arrange, Path=StartValue}"
+                TickFrequency="{Binding ElementName=UC_Arrange, Path=SliderTickFrequency}"
+                TickPlacement="BottomRight"
+                ValueChanged="SL_Bat2_ValueChanged"
+                Value="{Binding ElementName=UC_Arrange, Path=EndValue}">
+                <Slider.Clip>
+                    <RectangleGeometry Rect="{Binding ElementName=UC_Arrange, Path=EndRect}" />
+                </Slider.Clip>
+            </Slider>
+        </Canvas>
+        <Border
+            Width="60"
+            Height="20"
+            BorderBrush="Gray"
+            BorderThickness="1">
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="{Binding ElementName=SL_Bat2, Path=Value}" />
+        </Border>
+    </StackPanel>
+</UserControl>

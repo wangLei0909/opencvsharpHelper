@@ -82,7 +82,7 @@ namespace OpencvsharpModule.ViewModels
 
         private System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
 
-        private Mat Src;
+
         private Mat Dst;
         private Mat Gray;
         private Mat Mask;

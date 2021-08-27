@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using Prism.Ioc;
+using Prism.Regions;
+using System.Windows;
 
 namespace opencvsharphelper.Views
 {
@@ -7,9 +9,24 @@ namespace opencvsharphelper.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public MainWindow(IContainerExtension container)
         {
+
             InitializeComponent();
+
+            LoadMain(container);
+        }
+
+        async void LoadMain(IContainerExtension container)
+        {
+
+            await System.Threading.Tasks.Task.Delay(2000);
+
+            var main = container.Resolve<ModuleCore.Views.MainWindow>();
+
+            main.Show();
+
+            this.Close();
         }
     }
 }
