@@ -1,0 +1,231 @@
+﻿<UserControl
+    x:Class="OpencvsharpModule.Views.CannyView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:imageview="clr-namespace:ModuleCore.UserControls;assembly=ModuleCore"
+    xmlns:ivc="clr-namespace:ModuleCore.Mvvm;assembly=ModuleCore"
+    xmlns:local="clr-namespace:OpencvsharpModule.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:viewmodels="clr-namespace:OpencvsharpModule.ViewModels"
+    xmlns:z="clr-namespace:ModuleCore.UserControls;assembly=ModuleCore"
+    d:DataContext="{d:DesignInstance Type=viewmodels:CannyViewModel}"
+    d:DesignHeight="450"
+    d:DesignWidth="1200"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    Background="White"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style TargetType="TextBox" />
+        <Style TargetType="Button" />
+        <Style TargetType="ComboBox" />
+        <Style TargetType="TextBlock" />
+        <Style TargetType="Slider" />
+        <ivc:VisibilityConverter x:Key="isDisplay" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="120" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="LeftImageView" Width="10*" />
+                    <ColumnDefinition Width="3" />
+                    <ColumnDefinition x:Name="RightImageView" Width="10*" />
+                </Grid.ColumnDefinitions>
+                <Grid Background="Black">
+                    <ContentControl prism:RegionManager.RegionName="{Binding ViewName}" />
+                </Grid>
+                <GridSplitter
+                    Grid.Column="1"
+                    Width="3"
+                    HorizontalAlignment="Stretch" />
+                <imageview:ImageEdit Grid.Column="2" ImageSource="{Binding ImgDst}" />
+                <StackPanel
+                    Grid.Column="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Orientation="Horizontal">
+                    <TextBlock Foreground="Wheat" Text="算法时间: " />
+                    <TextBlock
+                        Width="40"
+                        Foreground="Wheat"
+                        Text="{Binding CT, StringFormat={}{0} ms}" />
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Button
+                    Width="30"
+                    HorizontalAlignment="Left"
+                    Click="LeftHide"
+                    Content="&lt;" />
+                <Button
+                    Width="30"
+                    HorizontalAlignment="Center"
+                    Click="BothShow"
+                    Content="●" />
+                <Button
+                    Width="30"
+                    HorizontalAlignment="Right"
+                    Click="RightHide"
+                    Content="&gt;" />
+            </Grid>
+
+        </Grid>
+        <StackPanel Grid.Row="1">
+            <TextBox
+                Height="20"
+                DockPanel.Dock="Bottom"
+                IsReadOnly="True"
+                Text="{Binding CommandText}" />
+            <StackPanel
+                Height="20"
+                Margin="1"
+                Orientation="Horizontal">
+                <TextBlock
+                    Width="85"
+                    Text="  源图象： "
+                    TextAlignment="Center" />
+                <ComboBox
+                    Width="80"
+                    DisplayMemberPath="Key"
+                    ItemsSource="{Binding Pool.Images}"
+                    SelectedItem="{Binding Pool.SelectImage}" />
+                <TextBlock VerticalAlignment="Center" Text="结果图像名称：" />
+                <TextBox Width="100" Text="{Binding MatName}" />
+                <Button
+                    Width="60"
+                    Command="{Binding AddMat}"
+                    Content="加入" />
+            </StackPanel>
+            <TabControl>
+                <TabItem Header="边缘">
+                    <StackPanel
+                Height="20"
+                Margin="1"
+                Orientation="Horizontal">
+                        <TextBlock
+                    Width="80"
+                    Margin="10,0,0,0"
+                    Text="Threshold：" />
+                        <z:RangeSlider
+                    EndValue="{Binding Threshold2}"
+                    Maximum="1500"
+                    Minimum="0"
+                    SilderWidth="600"
+                    StartValue="{Binding Threshold1}" />
+                        <Button
+                    Width="60"
+                    Command="{Binding GoCanny}"
+                    Content="得到边缘" />
+                    </StackPanel>
+
+                </TabItem>
+                <TabItem Header="轮廓">
+
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Bottom">
+                            <StackPanel
+                        Height="20"
+                        Margin="1"
+                        Orientation="Horizontal">
+                                <TextBlock
+                            Width="84"
+                            Text="轮廓检索模式："
+                            TextAlignment="Center" />
+                                <ComboBox
+                            Width="80"
+                            DisplayMemberPath="Key"
+                            ItemsSource="{Binding RetrievalModeList}"
+                            SelectedValue="{Binding RetrievalModeThis}"
+                            SelectedValuePath="Value" />
+
+                                <TextBlock Width="85" Text="轮廓近似方法：" />
+                                <ComboBox
+                            Width="80"
+                            DisplayMemberPath="Key"
+                            ItemsSource="{Binding ContourApproximationModeList}"
+                            SelectedValue="{Binding ContourApproximationModeThis}"
+                            SelectedValuePath="Value" />
+
+                                <Button
+                            Width="80"
+                            Command="{Binding GoFindContours}"
+                            Content="获得轮廓" />
+                                <!--  Cv2.BitwiseNot(part, part);  -->
+                                <TextBlock Margin="50,0,0,0" Text="轮廓数量：" />
+                                <Border BorderBrush="LightGray" BorderThickness="1">
+                                    <TextBlock Width="100" Text="{Binding CoutourCount}" />
+                                </Border>
+                                <TextBlock
+                            Width="85"
+                            VerticalAlignment="Center"
+                            Text="轮廓集名称："
+                            TextAlignment="Center" />
+                                <TextBox Width="80" Text="{Binding ContoursName}" />
+                                <Button
+                            Width="80"
+                            Command="{Binding AddContours}"
+                            Content="加入" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center" Text="周长筛选：" />
+                                <z:RangeSlider
+                            EndValue="{Binding LenghtHigh}"
+                            Maximum="{Binding LenghtLargest}"
+                            Minimum="10"
+                            SilderWidth="200"
+                            StartValue="{Binding LenghtLow}" />
+
+
+                                <TextBlock
+                            Width="85"
+                            VerticalAlignment="Center"
+                            Text="  轮廓： "
+                            TextAlignment="Center" />
+                                <ComboBox
+                            Width="80"
+                            DisplayMemberPath="Key"
+                            ItemsSource="{Binding ContourList}"
+                            SelectedItem="{Binding SelectContour}" />
+                                <TextBlock
+                            Width="85"
+                            VerticalAlignment="Center"
+                            Text="轮廓名称："
+                            TextAlignment="Center" />
+                                <TextBox Width="80" Text="{Binding ContourName}" />
+                                <Button
+                            Width="80"
+                            Command="{Binding AddContour}"
+                            Content="加入" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center" Text="面积筛选：" />
+                                <z:RangeSlider
+                            EndValue="{Binding AreaHigh}"
+                            Maximum="{Binding AreaLargest}"
+                            Minimum="10"
+                            SilderWidth="200"
+                            StartValue="{Binding AreaLow}" />
+                            </StackPanel>
+                        </StackPanel>
+
+                    </DockPanel>
+                </TabItem>
+            </TabControl>
+  
+ 
+
+
+        </StackPanel>
+    </Grid>
+</UserControl>

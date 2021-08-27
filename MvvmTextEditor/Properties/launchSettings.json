@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MvvmTextEditor": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}

@@ -1,0 +1,258 @@
+﻿<UserControl
+    x:Class="OpencvsharpModule.Views.CalibrateView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:imageview="clr-namespace:ModuleCore.UserControls;assembly=ModuleCore"
+    xmlns:ivc="clr-namespace:ModuleCore.Mvvm;assembly=ModuleCore"
+    xmlns:local="clr-namespace:OpencvsharpModule.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:viewmodels="clr-namespace:OpencvsharpModule.ViewModels"
+    xmlns:z="clr-namespace:ModuleCore.UserControls;assembly=ModuleCore"
+    d:DataContext="{d:DesignInstance Type=viewmodels:CalibrateViewModel}"
+    d:DesignHeight="650"
+    d:DesignWidth="800"   
+    Height="800"
+    Width="1200"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    Background="White"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style TargetType="TextBox" />
+        <Style TargetType="Button" />
+        <Style TargetType="ComboBox" />
+        <Style TargetType="TextBlock" />
+        <Style TargetType="Slider" />
+        <ivc:VisibilityConverter x:Key="isDisplay" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" MinWidth="100" />
+            <ColumnDefinition Width="3" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <!--<ContentControl prism:RegionManager.RegionName="ContentRegion" />-->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackPanel>
+                <Button
+                    Width="100"
+                    Height="30"
+                    Command="{Binding LoadFiles}"
+                    Content="棋盘图文件夹" />
+                <TextBlock HorizontalAlignment="Center" Text="角点数量" />
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <TextBox
+                        Width="35"
+                        Margin="5,0"
+                        Text="{Binding Common.BoardSizeX}" />
+                    <TextBlock Text="*" />
+                    <TextBox
+                        Width="35"
+                        Margin="5,0"
+                        Text="{Binding Common.BoardSizeY}" />
+                </StackPanel>
+            </StackPanel>
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+                <Grid>
+                    <ListView
+                        Grid.Row="1"
+                        Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualHeight}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        FontSize="12"
+                        ItemsSource="{Binding Common.Images}"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        SelectedItem="{Binding Common.SelectImage}"
+                        SelectionMode="Single">
+                        <ListView.View>
+                            <GridView AllowsColumnReorder="true">
+                                <GridViewColumn
+                                    Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualWidth}"
+                                    DisplayMemberBinding="{Binding Key}"
+                                    Header="棋盘图" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <ListView
+                        Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualHeight}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        FontSize="12"
+                        ItemsSource="{Binding Common.ProcessImages}"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        SelectedItem="{Binding Common.ProcessImageSelect}"
+                        SelectionMode="Single">
+                        <ListView.View>
+                            <GridView AllowsColumnReorder="true">
+
+                                <GridViewColumn
+                                    Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualWidth}"
+                                    DisplayMemberBinding="{Binding Key}"
+                                    Header="过程图" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </Grid>
+        </Grid>
+        <GridSplitter
+            Grid.Column="1"
+            Width="3"
+            HorizontalAlignment="Stretch" />
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="100" />
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="100" />
+                </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition x:Name="LeftImageView" Width="1*" />
+                        <ColumnDefinition Width="3" />
+                        <ColumnDefinition x:Name="RightImageView" Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <GridSplitter
+                        Grid.Column="1"
+                        Width="3"
+                        HorizontalAlignment="Stretch" />
+                    <imageview:ImageEdit
+                        Grid.Column="0"
+                        ImageSource="{Binding Common.ImgSrc}"
+                        SnapsToDevicePixels="True" />
+
+                    <imageview:ImageEdit
+                        Grid.Column="2"
+                        ImageSource="{Binding Common.ImgDst}"
+                        SnapsToDevicePixels="True" />
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Button
+                        Width="30"
+                        HorizontalAlignment="Left"
+                        Click="LeftHide"
+                        Content="&lt;" />
+                    <Button
+                        Width="30"
+                        HorizontalAlignment="Center"
+                        Click="BothShow"
+                        Content="●" />
+                    <Button
+                        Width="30"
+                        HorizontalAlignment="Right"
+                        Click="RightHide"
+                        Content="&gt;" />
+                </Grid>
+                <TextBox Grid.Row="2" Text="{Binding Common.Msg}" />
+            </Grid>
+            <TabControl Grid.Row="2">
+                <TabItem Header="鱼眼" IsSelected="True">
+                    <StackPanel
+                        Grid.Row="2"
+                        Height="50"
+                        Orientation="Horizontal">
+                        <StackPanel>
+
+
+                            <CheckBox
+                                Margin="10,10,10,0"
+                                Content="亚像素"
+                                IsChecked="{Binding FishEye.IsSubpix}" />
+                            <StackPanel Height="20" Orientation="Horizontal">
+
+                                <TextBlock Margin="10,0,10,0" Text="Size:" />
+                                <TextBox
+                                    Width="30"
+                                    Margin="00,0,10,0"
+                                    Text="{Binding FishEye.SubpixSize}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <Button
+                            Width="100"
+                            Margin="10"
+                            Command="{Binding FishEye.Calibration}"
+                            Content="标定" />
+                        <Button
+                            Width="100"
+                            Margin="10"
+                            Command="{Binding FishEye.SaveCalibrationFile}"
+                            Content="保存标定文件" />
+                        <Button
+                            Width="100"
+                            Margin="10"
+                            Command="{Binding FishEye.LoadCalibrationFile}"
+                            Content="载入标定文件" />
+                        <Button
+                            Width="100"
+                            Margin="10"
+                            Command="{Binding FishEye.FishEyeUndistorted}"
+                            Content="畸变校正" />
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="张正友">
+                    <Grid>
+
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel>
+
+
+                                <CheckBox
+                                    Margin="10,10,10,0"
+                                    Content="亚像素"
+                                    IsChecked="{Binding CalibrateCamera.IsSubpix}" />
+                                <StackPanel Height="20" Orientation="Horizontal">
+
+                                    <TextBlock Margin="10,0,10,0" Text="Size:" />
+                                    <TextBox
+                                        Width="30"
+                                        Margin="00,0,10,0"
+                                        Text="{Binding CalibrateCamera.SubpixSize}" />
+                                </StackPanel>
+                            </StackPanel>
+                            <Button
+                                Width="100"
+                                Margin="10"
+                                Command="{Binding CalibrateCamera.Calibration}"
+                                Content="标定" />
+                            <Button
+                                Width="100"
+                                Margin="10"
+                                Command="{Binding CalibrateCamera.SaveCalibrationFile}"
+                                Content="保存标定文件" />
+                            <Button
+                                Width="100"
+                                Margin="10"
+                                Command="{Binding CalibrateCamera.LoadCalibrationFile}"
+                                Content="载入标定文件" />
+                            <Button
+                                Width="100"
+                                Margin="10"
+                                Command="{Binding CalibrateCamera.Undistorted}"
+                                Content="畸变校正" />
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+
+            </TabControl>
+
+        </Grid>
+
+
+    </Grid>
+</UserControl>

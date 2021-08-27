@@ -1,0 +1,189 @@
+﻿<UserControl
+    x:Class="OpencvsharpModule.Views.CornersView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:imageview="clr-namespace:ModuleCore.UserControls;assembly=ModuleCore"
+    xmlns:ivc="clr-namespace:ModuleCore.Mvvm;assembly=ModuleCore"
+    xmlns:local="clr-namespace:OpencvsharpModule.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:viewmodels="clr-namespace:OpencvsharpModule.ViewModels"
+    xmlns:z="clr-namespace:ModuleCore.UserControls;assembly=ModuleCore"
+    d:DataContext="{d:DesignInstance Type=viewmodels:CornersViewModel}"
+    d:DesignHeight="450"
+    d:DesignWidth="1000"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    Background="White"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style TargetType="TextBox" />
+        <Style TargetType="Button" />
+        <Style TargetType="ComboBox" />
+        <Style TargetType="TextBlock" />
+        <Style TargetType="Slider" />
+        <ivc:VisibilityConverter x:Key="isDisplay" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="120" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="LeftImageView" Width="10*" />
+                    <ColumnDefinition Width="3" />
+                    <ColumnDefinition x:Name="RightImageView" Width="10*" />
+                </Grid.ColumnDefinitions>
+                <imageview:MaskView ImageSource="{Binding Pool.ImgSrc}" MaskSource="{Binding Pool.MaskSrc}" />
+                <GridSplitter
+                    Grid.Column="1"
+                    Width="3"
+                    HorizontalAlignment="Stretch" />
+                <imageview:ImageEdit Grid.Column="2" ImageSource="{Binding ImgDst}" />
+                <StackPanel
+                    Grid.Column="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Orientation="Horizontal">
+                    <TextBlock Foreground="Wheat" Text="算法时间: " />
+                    <TextBlock
+                        Width="40"
+                        Foreground="Wheat"
+                        Text="{Binding CT, StringFormat={}{0} ms}" />
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Button
+                    Width="30"
+                    HorizontalAlignment="Left"
+                    Click="LeftHide"
+                    Content="&lt;" />
+                <Button
+                    Width="30"
+                    HorizontalAlignment="Center"
+                    Click="BothShow"
+                    Content="●" />
+                <Button
+                    Width="30"
+                    HorizontalAlignment="Right"
+                    Click="RightHide"
+                    Content="&gt;" />
+            </Grid>
+
+        </Grid>
+        <StackPanel Grid.Row="1">
+            <TextBox
+                Height="20"
+                DockPanel.Dock="Bottom"
+                IsReadOnly="True"
+                Text="{Binding CommandText}" />
+            <StackPanel
+                Height="20"
+                Margin="1"
+                Orientation="Horizontal">
+                <TextBlock
+                    Width="85"
+                    Text="  源图象： "
+                    TextAlignment="Center" />
+                <ComboBox
+                    Width="80"
+                    DisplayMemberPath="Key"
+                    ItemsSource="{Binding Pool.Images}"
+                    SelectedItem="{Binding Pool.SelectImage}" />
+                <TextBlock VerticalAlignment="Center" Text="结果图像名称：" />
+                <TextBox Width="100" Text="{Binding MatName}" />
+                <Button
+                    Width="60"
+                    Command="{Binding AddMat}"
+                    Content="加入" />
+            </StackPanel>
+
+            <StackPanel
+                Height="20"
+                Margin="1"
+                Orientation="Horizontal">
+                <Button Command="{Binding GoGoodFeatures}" Content="角点检测" />
+
+            </StackPanel>
+
+            <StackPanel
+                Height="20"
+                Margin="1"
+                Orientation="Horizontal">
+                <TextBlock
+                    Width="80"
+                    Margin="10,0,0,0"
+                    Text="最大角点数：" />
+                <Slider
+                    Width="120"
+                    IsMoveToPointEnabled="True"
+                    Maximum="1000"
+                    Minimum="1"
+                    Value="{Binding MaxCorners}" />
+                <TextBlock Width="40" Text="{Binding MaxCorners}" />
+                <TextBlock Margin="20,0,0,0" Text="QualityLevel：" />
+                <Slider
+                    Width="120"
+                    IsMoveToPointEnabled="True"
+                    Maximum="0.9"
+                    Minimum="0.01"
+                    SmallChange="0.01"
+                    Value="{Binding QualityLevel}" />
+                <TextBlock Width="40" Text="{Binding QualityLevel, StringFormat={}{0:F2}}" />
+                <TextBlock Margin="20,0,0,0" Text="MinDistance：" />
+                <Slider
+                    Width="120"
+                    IsMoveToPointEnabled="True"
+                    Maximum="10"
+                    Minimum="1"
+                    Value="{Binding MinDistance}" />
+                <TextBlock Width="40" Text="{Binding MinDistance, StringFormat={}{0:F2}}" />
+
+
+            </StackPanel>
+
+            <StackPanel
+                Height="20"
+                Margin="1"
+                Orientation="Horizontal">
+                <TextBlock Margin="20,0,0,0" Text="UseHarris：" />
+                <ToggleButton IsChecked="{Binding UseHarris}" />
+
+                <TextBlock Margin="20,0,0,0" Text="BlockSize：" />
+                <Slider
+                    Width="120"
+                    IsMoveToPointEnabled="True"
+                    Maximum="10"
+                    Minimum="1"
+                    Value="{Binding BlockSize}" />
+                <TextBlock Width="40" Text="{Binding BlockSize, StringFormat={}{0:F2}}" />
+                <TextBlock
+                    Width="85"
+                    Text="  Mask： "
+                    TextAlignment="Center" />
+                <ComboBox
+                    Width="80"
+                    DisplayMemberPath="Key"
+                    ItemsSource="{Binding Pool.Images}"
+                    SelectedItem="{Binding Pool.SelectMask}" />
+                <Button Command="{Binding GoClearMask}" Content="取消Mask" />
+                <TextBlock Margin="20,0,0,0" Text="K：" />
+                <Slider
+                    Width="120"
+                    IsMoveToPointEnabled="True"
+                    Maximum="1"
+                    Minimum="0.01"
+                    SmallChange="0.01"
+                    Value="{Binding K}" />
+                <TextBlock Width="40" Text="{Binding K, StringFormat={}{0:F2}}" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

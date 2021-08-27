@@ -1,0 +1,228 @@
+﻿<UserControl
+    x:Class="OpencvsharpModule.Views.MaskCopyView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:imageview="clr-namespace:ModuleCore.UserControls;assembly=ModuleCore"
+    xmlns:local="clr-namespace:OpencvsharpModule.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:viewmodels="clr-namespace:OpencvsharpModule.ViewModels"
+    xmlns:z="clr-namespace:ModuleCore.UserControls;assembly=ModuleCore"
+    d:DataContext="{d:DesignInstance Type=viewmodels:MaskCopyViewModel}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    Background="White"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style TargetType="TextBox" />
+        <Style TargetType="Button" />
+        <Style TargetType="ComboBox" />
+        <Style TargetType="TextBlock" />
+        <Style TargetType="Slider" />
+
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="120" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="LeftImageView" Width="10*" />
+                    <ColumnDefinition Width="3" />
+                    <ColumnDefinition x:Name="RightImageView" Width="10*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <imageview:ImageEdit Grid.Row="0" ImageSource="{Binding Pool.ImgSrc}" RotateROIList="{Binding RotateROIList}" />
+                    <imageview:ImageEdit Grid.Row="1" ImageSource="{Binding Pool.ImgSrc2}" />
+
+                </Grid>
+                <GridSplitter
+                    Grid.Column="1"
+                    Width="3"
+                    HorizontalAlignment="Stretch" />
+                <imageview:ImageEdit Grid.Column="2" ImageSource="{Binding ImgDst}" />
+                <StackPanel
+                    Grid.Column="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Orientation="Horizontal">
+                    <TextBlock Foreground="Wheat" Text="算法时间: " />
+                    <TextBlock
+                        Width="40"
+                        Foreground="Wheat"
+                        Text="{Binding CT, StringFormat={}{0} ms}" />
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Button
+                    Width="30"
+                    HorizontalAlignment="Left"
+                    Click="LeftHide"
+                    Content="&lt;" />
+                <Button
+                    Width="30"
+                    HorizontalAlignment="Center"
+                    Click="BothShow"
+                    Content="●" />
+                <Button
+                    Width="30"
+                    HorizontalAlignment="Right"
+                    Click="RightHide"
+                    Content="&gt;" />
+            </Grid>
+
+        </Grid>
+        <StackPanel Grid.Row="1">
+
+            <TextBox
+                Height="20"
+                DockPanel.Dock="Bottom"
+                IsReadOnly="True"
+                Text="{Binding CommandText}" />
+            <StackPanel Height="20" Orientation="Horizontal">
+                <TextBlock
+                    Width="85"
+                    Text="  源图象： "
+                    TextAlignment="Center" />
+                <ComboBox
+                    Width="80"
+                    DisplayMemberPath="Key"
+                    ItemsSource="{Binding Pool.Images}"
+                    SelectedItem="{Binding Pool.SelectImage}" />
+                <TextBlock
+                    Width="85"
+                    Text="  目标图/Mask： "
+                    TextAlignment="Center" />
+                <ComboBox
+                    Width="80"
+                    DisplayMemberPath="Key"
+                    ItemsSource="{Binding Pool.Images}"
+                    SelectedItem="{Binding Pool.SelectImage2}" />
+                <TextBlock VerticalAlignment="Center" Text="结果图像名称：" />
+                <TextBox Width="100" Text="{Binding MatName}" />
+                <Button
+                    Width="60"
+                    Command="{Binding AddMat}"
+                    Content="加入" />
+            </StackPanel>
+
+            <TabControl>
+                <TabItem Header="蒙板复制">
+
+                    <StackPanel
+                        Height="40"
+                        Margin="5"
+                        Orientation="Horizontal">
+
+      
+                            <Button
+                                Width="60"
+                                Command="{Binding GoCopyTo}"
+                                Content="蒙版复制" />
+
+                        <Button
+                                Width="60"
+                                Command="{Binding GoAdditive}"
+                                Content="相加" />
+                        <Button
+                                Width="60"
+                                Command="{Binding GoSrcMinusTarget}"
+                                Content="源减目标" />
+                        <Button
+                                Width="60"
+                                Command="{Binding GoTargetMinusSrc}"
+                                Content="目标减源" />
+                        <Button
+                                Width="60"
+                                Command="{Binding GoSrcDiffTarget}"
+                                Content="两图差异" />
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="混合">
+                    <StackPanel
+                        Height="20"
+                        Margin="5"
+                        Orientation="Horizontal">
+
+
+                        <Button
+                                Width="60"
+                                Command="{Binding GoAddWeighted}"
+                                Content="线性混合" />
+                        <StackPanel Margin="5,0" Orientation="Horizontal">
+                            <TextBlock Text="源权重：" />
+                            <Slider
+                            Width="120"
+                            IsMoveToPointEnabled="True"
+                            Maximum="1"
+                            Minimum="0.01"
+                            Value="{Binding Alpha}" />
+                            <TextBlock Text="{Binding Alpha, StringFormat={}{0:F3}}" />
+                        </StackPanel>
+                        <StackPanel Margin="50,0" Orientation="Horizontal">
+                            <TextBlock  Text="目标权重：" />
+                            <Slider
+                            Width="120"
+                            IsMoveToPointEnabled="True"
+                            Maximum="1"
+                            Minimum="0.01"
+                            Value="{Binding Beta}" />
+                            <TextBlock Text="{Binding Beta, StringFormat={}{0:F3}}" />
+                        </StackPanel>
+              
+                            
+                       
+                        <Button Margin="50,0,10,0"
+                                Width="60"
+                                Command="{Binding GoSeamlessClone}"
+                                Content="泊松融合" />
+                        <TextBlock Text="泊松融合方法：" />
+                        <ComboBox
+                                Width="160"
+                                DisplayMemberPath="Key"
+                                ItemsSource="{Binding SeamlessCloneMethodList}"
+                                SelectedValue="{Binding SeamlessCloneMethodThis}"
+                                SelectedValuePath="Value" />
+             
+                    </StackPanel>
+                    
+                </TabItem>
+                <TabItem Header="旋转区域">
+                    <StackPanel
+                        Height="40"
+                        Margin="5"
+                        Orientation="Horizontal">
+
+
+                        <Button
+                                Width="120"
+                                Command="{Binding GoGetRotateROIList}"
+                                Content="旋转区域取出" />
+
+
+                        <Button
+                                Width="120"
+                                Command="{Binding GoSetRotateROIList}"
+                                Content="旋转区域嵌入" />
+                    </StackPanel>
+
+                </TabItem>
+            </TabControl>
+        </StackPanel>
+
+    </Grid>
+</UserControl>

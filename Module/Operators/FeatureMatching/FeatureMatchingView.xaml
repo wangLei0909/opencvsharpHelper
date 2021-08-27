@@ -1,0 +1,332 @@
+﻿<UserControl
+    x:Class="OpencvsharpModule.Views.FeatureMatchingView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:imageview="clr-namespace:ModuleCore.UserControls;assembly=ModuleCore"
+    xmlns:ivc="clr-namespace:ModuleCore.Mvvm;assembly=ModuleCore"
+    xmlns:local="clr-namespace:OpencvsharpModule.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:viewmodels="clr-namespace:OpencvsharpModule.ViewModels"
+    xmlns:z="clr-namespace:ModuleCore.UserControls;assembly=ModuleCore"
+    d:DataContext="{d:DesignInstance Type=viewmodels:FeatureMatchingViewModel}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    Background="White"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style TargetType="TextBox" />
+        <Style TargetType="Button" />
+        <Style TargetType="ComboBox" />
+        <Style TargetType="TextBlock" />
+        <Style TargetType="Slider" />
+        <ivc:VisibilityConverter x:Key="isDisplay" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="200" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="LeftImageView" Width="10*" />
+                    <ColumnDefinition Width="3" />
+                    <ColumnDefinition x:Name="RightImageView" Width="10*" />
+                </Grid.ColumnDefinitions>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <imageview:ImageEdit Grid.Row="0" ImageSource="{Binding Pool.ImgSrc}" />
+                    <imageview:ImageEdit Grid.Row="1" ImageSource="{Binding Pool.ImgSrc2}" />
+
+                </Grid>
+                <GridSplitter
+                    Grid.Column="1"
+                    Width="3"
+                    HorizontalAlignment="Stretch" />
+                <imageview:ImageEdit Grid.Column="2" ImageSource="{Binding ImgDst}" />
+            </Grid>
+            <Grid Grid.Row="1">
+                <Button
+                    Width="30"
+                    HorizontalAlignment="Left"
+                    Click="LeftHide"
+                    Content="&lt;" />
+                <Button
+                    Width="30"
+                    HorizontalAlignment="Center"
+                    Click="BothShow"
+                    Content="●" />
+                <Button
+                    Width="30"
+                    HorizontalAlignment="Right"
+                    Click="RightHide"
+                    Content="&gt;" />
+            </Grid>
+
+        </Grid>
+        <TabControl Grid.Row="1">
+            <TabItem Header="特征匹配" IsSelected="True">
+
+                <StackPanel>
+                    <TextBox
+                        Height="80"
+                        DockPanel.Dock="Bottom"
+                        IsReadOnly="True"
+                        Text="{Binding CommandText}" />
+                    <StackPanel
+                        Height="20"
+                        Margin="1"
+                        Orientation="Horizontal">
+                        <TextBlock
+                            Width="85"
+                            Text="  源图象1： "
+                            TextAlignment="Center" />
+                        <ComboBox
+                            Width="80"
+                            DisplayMemberPath="Key"
+                            ItemsSource="{Binding Pool.Images}"
+                            SelectedItem="{Binding Pool.SelectImage}" />
+                        <TextBlock
+                            Width="85"
+                            Text="  源图象2： "
+                            TextAlignment="Center" />
+                        <ComboBox
+                            Width="80"
+                            DisplayMemberPath="Key"
+                            ItemsSource="{Binding Pool.Images}"
+                            SelectedItem="{Binding Pool.SelectImage2}" />
+                        <TextBlock Text="  匹配方法： " TextAlignment="Center" />
+
+
+                        <CheckBox IsChecked="{Binding FlannMatcher}">FlannMatcher</CheckBox>
+                        <CheckBox IsChecked="{Binding IsEnableMinDis}">IsEnableMinDis</CheckBox>
+                        <CheckBox IsChecked="{Binding IsEnableKnnMatch}">IsEnableKnnMatch</CheckBox>
+
+
+                    </StackPanel>
+                    <StackPanel
+                        Height="20"
+                        Margin="1"
+                        Orientation="Horizontal">
+                        <Button
+                            Width="60"
+                            Margin="5,0,0,0"
+                            Command="{Binding GoMatche}"
+                            CommandParameter="SIFT"
+                            Content="SIFT" />
+                        <Button
+                            Width="60"
+                            Margin="5,0,0,0"
+                            Command="{Binding GoMatche}"
+                            CommandParameter="SURF"
+                            Content="SURF" />
+                        <Button
+                            Width="60"
+                            Margin="5,0,0,0"
+                            Command="{Binding GoMatche}"
+                            CommandParameter="BRISK"
+                            Content="BRISK" />
+
+                        <Button
+                            Width="60"
+                            Margin="5,0,0,0"
+                            Command="{Binding GoMatche}"
+                            CommandParameter="FREAK"
+                            Content="FREAK" />
+                        <Button
+                            Width="60"
+                            Margin="5,0,0,0"
+                            Command="{Binding GoMatche}"
+                            CommandParameter="ORB"
+                            Content="ORB" />
+
+                        <Button
+                            Width="60"
+                            Margin="5,0,0,0"
+                            Command="{Binding GoMatche}"
+                            CommandParameter="AKAZE"
+                            Content="AKAZE" />
+                        <!--<Button
+                    Width="60"
+                    Margin="5,0,0,0"
+                    Command="{Binding GoBEBLIDMatche}"
+                    Content="BEBLID" />-->
+
+                        <TextBlock Margin="10,0,0,0" Text="DistanceMax：" />
+                        <Slider
+                            Width="120"
+                            IsMoveToPointEnabled="True"
+                            Maximum="10"
+                            Minimum="0.01"
+                            Value="{Binding DistanceMax}" />
+                        <TextBlock Text="{Binding DistanceMax, StringFormat={}{0:F3}}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="5" Orientation="Horizontal">
+                        <TextBlock Width="120" Text="SiftContrast：" />
+                        <Slider
+                            Width="120"
+                            IsMoveToPointEnabled="True"
+                            Maximum="0.5"
+                            Minimum="0.01"
+                            Value="{Binding SiftContrast}" />
+                        <TextBlock Text="{Binding SiftContrast, StringFormat={}{0:F3}}" />
+                    </StackPanel>
+                    <StackPanel Margin="5" Orientation="Horizontal">
+                        <TextBlock Width="120" Text="SurfThreshold：" />
+                        <Slider
+                            Width="120"
+                            IsMoveToPointEnabled="True"
+                            Maximum="4000"
+                            Minimum="100"
+                            Value="{Binding SurfThreshold}" />
+                        <TextBlock Text="{Binding SurfThreshold, StringFormat={}{0:F0}}" />
+                    </StackPanel>
+                    <StackPanel Margin="5" Orientation="Horizontal">
+                        <TextBlock Width="120" Text="FREAKThresold：" />
+                        <Slider
+                            Width="120"
+                            IsMoveToPointEnabled="True"
+                            Maximum="100"
+                            Minimum="20"
+                            Value="{Binding FREAKThresold}" />
+                        <TextBlock Text="{Binding FREAKThresold}" />
+                    </StackPanel>
+
+
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="模板匹配">
+                <StackPanel>
+                    <StackPanel
+                        Height="20"
+                        Margin="1"
+                        Orientation="Horizontal">
+                        <TextBlock
+                            Width="85"
+                            Text="  目标： "
+                            TextAlignment="Center" />
+                        <ComboBox
+                            Width="80"
+                            DisplayMemberPath="Key"
+                            ItemsSource="{Binding Pool.Images}"
+                            SelectedItem="{Binding Pool.SelectImage}" />
+
+                        <TextBlock
+                            Width="85"
+                            Text="  模板： "
+                            TextAlignment="Center" />
+                        <ComboBox
+                            Width="80"
+                            DisplayMemberPath="Key"
+                            ItemsSource="{Binding Pool.Images}"
+                            SelectedItem="{Binding Pool.SelectImage2}" />
+                    </StackPanel>
+                    <StackPanel
+                        Height="20"
+                        Margin="1"
+                        Orientation="Horizontal">
+                        <TextBlock Margin="5,0,0,0" Text="模板匹配模式：" />
+                        <ComboBox
+                            Width="100"
+                            DisplayMemberPath="Key"
+                            ItemsSource="{Binding TemplateMatchModeList}"
+                            SelectedValue="{Binding TemplateMatchModeThis}"
+                            SelectedValuePath="Value" />
+                        <Button
+                            Width="60"
+                            Margin="5,0,0,0"
+                            Command="{Binding GoTemplateMatche}"
+                            Content="模板匹配" />
+                        <TextBlock Margin="5,0,0,0" Text="匹配分数：" />
+                        <TextBlock
+                            Width="80"
+                            Margin="5,0"
+                            Text="{Binding MatchingTotal}" />
+                    </StackPanel>
+
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="轮廓匹配">
+                <StackPanel>
+                    <TextBox
+                        Height="80"
+                        DockPanel.Dock="Bottom"
+                        IsReadOnly="True"
+                        Text="{Binding CommandText}" />
+
+                    <StackPanel
+                        Height="20"
+                        Margin="1"
+                        Orientation="Horizontal">
+                        <TextBlock
+                            Width="85"
+                            Text="  模板： "
+                            TextAlignment="Center" />
+                        <ComboBox
+                            Width="80"
+                            DisplayMemberPath="Key"
+                            ItemsSource="{Binding PoolData.Contours}"
+                            SelectedItem="{Binding PoolData.SelectContour1}" />
+
+                        <TextBlock
+                            Width="85"
+                            Text="  目标： "
+                            TextAlignment="Center" />
+                        <ComboBox
+                            Width="80"
+                            DisplayMemberPath="Key"
+                            ItemsSource="{Binding PoolData.ContoursSet}"
+                            SelectedItem="{Binding PoolData.SelectContours}" />
+                        <TextBlock
+                        Width="85"
+                        VerticalAlignment="Center"
+                        Text=" 匹配方法： " />
+                        <ComboBox
+                        Width="80"
+                        DisplayMemberPath="Key"
+                        ItemsSource="{Binding ShapeMatchModeList}"
+                        SelectedItem="{Binding ShapeMatchModesThis}" />
+                        <Button
+                            Width="60"
+                            Margin="5,0,0,0"
+                            Command="{Binding GoShapesMatche}"
+                            Content="匹配" />
+                        <CheckBox  Content="最小外接矩" Margin="10,0" IsChecked="{Binding GetRotatedRect}"   />
+                        <TextBlock Margin="5,0,0,0" Text="最低匹配分数：" />
+                        <Slider
+                            Width="120"
+                            IsMoveToPointEnabled="True"
+                            Maximum="1"
+                            Minimum="0.1"
+                            Value="{Binding MinScore}" />
+                        <TextBlock Text="{Binding MinScore, StringFormat={}{0:F2}}" />
+                        <TextBlock Margin="5,0,0,0" Text="最高匹配分数：" />
+ 
+                        <TextBlock Text="{Binding MaxScore, StringFormat={}{0:F6}}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="长度筛选：" />
+                        <z:RangeSlider
+                                        EndValue="{Binding LenghtHigh}"
+                                        Maximum="1000"
+                                        Minimum="1"
+                                        SilderWidth="200"
+                                        StartValue="{Binding LenghtLow}" />
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

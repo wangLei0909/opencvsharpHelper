@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Opencvsharphelper": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}
