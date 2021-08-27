@@ -24,16 +24,21 @@ namespace OpencvsharpModule.Models
     {
         public CameraModel(IEventAggregator ea, IContainerExtension container)
         {
-           // gocw = container.Resolve<opencvcli.GOCW>();
+            // gocw = container.Resolve<opencvcli.GOCW>();
 
-            Cameras = new MVSCameras();
-            // Cameras = new BaslerCameras();
+            HikrobotCameras = new MVSCameras();
+            BaslerCameras = new BaslerCameras();
+
             _ea = ea;
-            Cameras.ErrorMessage += ShowError;
-            Cameras.CameraListChanged += UpdateCameraList;
-            Cameras.InitCameras();
-            Pool = container.Resolve<ImagePool>();
+            HikrobotCameras.ErrorMessage += ShowError;
+            HikrobotCameras.CameraListChanged += UpdateCameraList;
+            HikrobotCameras.InitCameras();
 
+            BaslerCameras.ErrorMessage += ShowError;
+            BaslerCameras.CameraListChanged += UpdateCameraList;
+            BaslerCameras.InitCameras();
+
+            Pool = container.Resolve<ImagePool>();
             var vcas = Enum.GetValues<VideoCaptureAPIs>();
             foreach (var vca in vcas)
                 VideoCaptureAPIsList.Add(vca.ToString(), vca);
@@ -41,9 +46,10 @@ namespace OpencvsharpModule.Models
             LoadAutoRun();
         }
 
-        private void UpdateCameraList(string ip)
+        private void UpdateCameraList(string cameraInfo)
         {
-            CameraList.Add(ip, ip);
+            var info = cameraInfo.Split(";");
+            CameraList.Add(info[0], info[1]); // 厂家 ，IP
         }
 
         private void ShowError(string obj)
@@ -55,7 +61,8 @@ namespace OpencvsharpModule.Models
             });
         }
 
-        public ICameras Cameras { get; set; }
+        public ICameras HikrobotCameras { get; set; }
+        public ICameras BaslerCameras { get; set; }
         private readonly IEventAggregator _ea;
         public ImagePool Pool { get; set; }
 
@@ -149,6 +156,7 @@ namespace OpencvsharpModule.Models
                 AutoRun.Value.Invoke(Src);
                 AutoRunsw.Stop();
                 CT = AutoRunsw.ElapsedMilliseconds;
+                if (Dst is null) return;
                 System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
                     ImgDst = WriteableBitmapConverter.ToWriteableBitmap(Dst);
@@ -229,11 +237,13 @@ namespace OpencvsharpModule.Models
 
             ImgDst = WriteableBitmapConverter.ToWriteableBitmap(Dst);
         }
+
         private DelegateCommand _GetImageROIMask;
+
         public DelegateCommand GetImageROIMask =>
              _GetImageROIMask ??= new DelegateCommand(ExecuteGetImageROIMask);
 
-        void ExecuteGetImageROIMask()
+        private void ExecuteGetImageROIMask()
         {
             if (!Pool.SelectImage.HasValue || !Pool.SelectImage.Value.Value.GetGray(out Src)) return;
             //选区超出图像
@@ -246,8 +256,8 @@ namespace OpencvsharpModule.Models
             }
             Rect rect = new(Pool.ROILeft, Pool.ROITop, Pool.ROIWidth, Pool.ROIHeight);
 
-            Dst = Src*0;
-          var  mask  =   new Mat(rect.Height,rect.Width,MatType.CV_8UC1,Scalar.White) ;
+            Dst = Src * 0;
+            var mask = new Mat(rect.Height, rect.Width, MatType.CV_8UC1, Scalar.White);
 
             Dst[rect] = mask;
             ImgDst = WriteableBitmapConverter.ToWriteableBitmap(Dst);
@@ -268,7 +278,17 @@ namespace OpencvsharpModule.Models
             sw.Restart();
             Rect rect = new(Pool.ROILeft, Pool.ROITop, Pool.ROIWidth, Pool.ROIHeight);
             // 拍照
-            Src = await Cameras.GetOneImage(SelectedCamera.Value, ExposureTime, rect);
+            switch (SelectedCamera.Key)
+            {
+                case "Hikrobot":
+                    Src = await HikrobotCameras.GetOneImage(SelectedCamera.Value, ExposureTime, rect);
+                    break;
+                case "Basler":
+                    Src = await BaslerCameras.GetOneImage(SelectedCamera.Value, ExposureTime, rect);
+                    break;
+                default:
+                    break;
+            }
 
             sw.Stop();
             GrabTime = sw.Elapsed.TotalMilliseconds;
@@ -294,14 +314,23 @@ namespace OpencvsharpModule.Models
             }
             sw.Restart();
 
+            switch (SelectedCamera.Key)
+            {
+                case "Hikrobot":
+                    Src = await HikrobotCameras.GetOneImage(SelectedCamera.Value, ExposureTime, new(0, 0, 0, 0));
+                    break;
+                case "Basler":
+                    Src = await BaslerCameras.GetOneImage(SelectedCamera.Value, ExposureTime, new(0, 0, 0, 0));
+                    break;
+                default:
+                    break;
+            }
             // 拍照
-            Src = await Cameras.GetOneImage(SelectedCamera.Value, ExposureTime, new(0, 0, 0, 0));
 
             sw.Stop();
             GrabTime = sw.Elapsed.TotalMilliseconds;
             Pool.IsCamera = true;
             UpdateSrc();
- 
         }
 
         private int exposureTime = 10000;
@@ -329,7 +358,6 @@ namespace OpencvsharpModule.Models
         }
 
         private Mat Src;
-
 
         #region Usb Camera
 
@@ -630,18 +658,20 @@ namespace OpencvsharpModule.Models
 
         #endregion 载入 保存
 
+        private string _Text = "测试文字";
 
-        private string _Text="测试文字";
         public string Text
         {
             get { return _Text; }
             set { SetProperty(ref _Text, value); }
         }
+
         private DelegateCommand _DrawText;
+
         public DelegateCommand DrawText =>
              _DrawText ??= new DelegateCommand(ExecuteDrawText);
 
-        void ExecuteDrawText()
+        private void ExecuteDrawText()
         {
             if (!Pool.SelectImage.HasValue) return;
             Src = Pool.SelectImage.Value.Value;
@@ -658,7 +688,7 @@ namespace OpencvsharpModule.Models
             Rect rect = new(Pool.ROILeft, Pool.ROITop, Pool.ROIWidth, Pool.ROIHeight);
             AutoRunsw.Restart();
             Dst.PutTextZh(Text, rect);
-            
+
             AutoRunsw.Stop();
             CT = AutoRunsw.ElapsedMilliseconds;
 

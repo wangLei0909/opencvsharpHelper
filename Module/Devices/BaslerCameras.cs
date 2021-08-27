@@ -50,7 +50,9 @@ namespace OpencvsharpModule.Devices
                 allCameras.Add(mCamera);
 
                 CameraList.Add(mCamera.CameraInfo[CameraInfoKey.DeviceIpAddress], mCamera);
-                CameraListChanged?.Invoke(mCamera.CameraInfo[CameraInfoKey.DeviceIpAddress]);
+                var type = mCamera.CameraInfo[CameraInfoKey.VendorName];
+                var ip = mCamera.CameraInfo[CameraInfoKey.DeviceIpAddress];
+                CameraListChanged?.Invoke(type + ";" +ip);
                 LoadConfig();
             }
         }

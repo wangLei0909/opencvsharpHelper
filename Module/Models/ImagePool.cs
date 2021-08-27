@@ -53,7 +53,7 @@ namespace OpencvsharpModule.Models
             get { return _selectImage; }
             set
             {
-                if (value is not null && value.HasValue && !value.Value.Value.Empty())
+                if (value is not null && value.HasValue&& value.Value.Value is not null && !value.Value.Value.Empty())
                 {
                     //从相机采集非ROI图像时调整
                     if (IsCamera)

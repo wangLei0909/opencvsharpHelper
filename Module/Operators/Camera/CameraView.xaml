@@ -285,9 +285,8 @@
                 Orientation="Horizontal">
                 <TextBlock Margin="5,0,0,0" Text="Gige相机:" />
                 <ComboBox
-                    Width="140"
+                    Width="200"
                     Margin="10,0"
-                    DisplayMemberPath="Key"
                     ItemsSource="{Binding Model.CameraList}"
                     SelectedItem="{Binding Model.SelectedCamera}" />
                 <TextBlock Margin="5,0,0,0" Text="曝光时间:" />
@@ -382,7 +381,7 @@
                     Width="80"
                     Margin="10,0"
                     Command="{Binding Model.DrawRotateRect}"
-                  
+
                 CommandParameter="{Binding ElementName=rrr}"
                     Content="画旋转矩" />-->
                 <TextBlock Margin="5,0,0,0" Text="文字：" />

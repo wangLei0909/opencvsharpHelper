@@ -64,12 +64,12 @@ namespace OpencvsharpModule.Devices
 
                 MyCamera.MV_CC_DEVICE_INFO deviceinfo = (MyCamera.MV_CC_DEVICE_INFO)Marshal.PtrToStructure(StDevList.pDeviceInfo[i], typeof(MyCamera.MV_CC_DEVICE_INFO));
                 MyCamera.MV_GIGE_DEVICE_INFO gigeInfo = (MyCamera.MV_GIGE_DEVICE_INFO)MyCamera.ByteToStruct(deviceinfo.SpecialInfo.stGigEInfo, typeof(MyCamera.MV_GIGE_DEVICE_INFO));
-
+                if (gigeInfo.chManufacturerName != "Hikrobot" && gigeInfo.chManufacturerName != "Hikvision") continue;
                 //绑定相机========================================================================================================
                 //if (gigeInfo.chSerialNumber != "00F63387250" && gigeInfo.chSerialNumber != "00D57802787") { ErrorMessage?.Invoke("找不到相机,请联系厂家：17551023102"); return; }
 
-                // ch:显示IP | en:Display IP
-                if (nRet == MyCamera.MV_OK)
+                    // ch:显示IP | en:Display IP
+                    if (nRet == MyCamera.MV_OK)
                 {
                     uint nIp1 = (gigeInfo.nCurrentIp & 0xFF000000) >> 24;
                     uint nIp2 = (gigeInfo.nCurrentIp & 0x00FF0000) >> 16;
@@ -78,7 +78,7 @@ namespace OpencvsharpModule.Devices
                     if (!CameraList.ContainsKey($"{nIp1}.{nIp2}.{nIp3}.{nIp4}"))
                     {
                         CameraList.Add($"{nIp1}.{nIp2}.{nIp3}.{nIp4}", device);
-                        CameraListChanged?.Invoke($"{nIp1}.{nIp2}.{nIp3}.{nIp4}");
+                        CameraListChanged?.Invoke($"Hikrobot;{nIp1}.{nIp2}.{nIp3}.{nIp4}");
                     }
                 }
                 else
