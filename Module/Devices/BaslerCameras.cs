@@ -66,6 +66,13 @@ namespace OpencvsharpModule.Devices
                 try
                 {
                     mCamera.Value.Open();
+                    mCamera.Value.Parameters[PLCamera.OffsetX].SetValue(0);
+                    mCamera.Value.Parameters[PLCamera.OffsetY].SetValue(0);
+                    var maxwidth = mCamera.Value.Parameters[PLCamera.WidthMax].GetValue();
+                    var maxHeight = mCamera.Value.Parameters[PLCamera.HeightMax].GetValue();
+
+                    FullRectList.Add(mCamera.Key, new Rect(0, 0, (int)maxwidth, (int)maxHeight));
+
                     mCamera.Value.Parameters[PLCameraInstance.MaxNumBuffer].SetValue(1);
                     mCamera.Value.Parameters[PLTransportLayer.HeartbeatTimeout]
                         .TrySetValue(1000, IntegerValueCorrection.Nearest);  // 1000 ms timeout
@@ -76,23 +83,39 @@ namespace OpencvsharpModule.Devices
                 }
             }
         }
+        private OpenCvSharp.Rect ROIRect;
+        private OpenCvSharp.Rect ROIRectFomat;
+        public Dictionary<string, Rect> FullRectList = new();
+        private void FomatROI(Camera camera)
+        {
+            ROIRectFomat = ROIRect;
+            ROIRectFomat.Width = ROIRectFomat.Width < 64 ? 64 : ROIRectFomat.Width;
+            ROIRectFomat.Height = ROIRectFomat.Height < 64 ? 64 : ROIRectFomat.Height;
 
+        }
         public async Task<Mat> GetOneImage(string ip, int exposureTime, Rect rect)
         {
-         
+
+ 
 
             exposureTime = exposureTime < 35 ? 35 : exposureTime;
             exposureTime = exposureTime > 999985 ? 999985 : exposureTime;
 
             Mat mat = null;
+ 
+            Camera mCamera = CameraList[ip];           
+            
+            if (rect.Width == 0)
+            {         //AOI set
+                rect = FullRectList[ip];
 
-            //Camera mCamera = allCameras.Where(c => c.CameraInfo[CameraInfoKey.DeviceIpAddress] == ip).FirstOrDefault();
-            Camera mCamera = CameraList[ip];
+            }
             if (!mCamera.IsOpen)
             {
                 try
                 {
                     mCamera.Open();
+  
                     mCamera.Parameters[PLCameraInstance.MaxNumBuffer].SetValue(1);
                     mCamera.Parameters[PLTransportLayer.HeartbeatTimeout]
                         .TrySetValue(1000, IntegerValueCorrection.Nearest);  // 1000 ms timeout
@@ -103,15 +126,24 @@ namespace OpencvsharpModule.Devices
                     goto fail;
                 }
             }
+            if (ROIRect != rect)
+            {
+                ROIRect = rect;
+                FomatROI(CameraList[ip]);
+                CameraList[ip].Parameters[PLCamera.Width].SetValue(64);
+                CameraList[ip].Parameters[PLCamera.Height].SetValue(64);
+                CameraList[ip].Parameters[PLCamera.OffsetX].SetValue(ROIRectFomat.Left);
+                CameraList[ip].Parameters[PLCamera.OffsetY].SetValue(ROIRectFomat.Top);
+                CameraList[ip].Parameters[PLCamera.Width].SetValue(ROIRectFomat.Width);
+                CameraList[ip].Parameters[PLCamera.Height].SetValue(ROIRectFomat.Height);
 
+            }
             //设置要在采集之前
             mCamera.Parameters[PLCamera.ExposureAuto].SetValue("Off");  //自动曝光关
             mCamera.Parameters[PLCamera.ExposureTimeAbs].SetValue(exposureTime);
-            //AOI set
-           var maxwidth= mCamera.Parameters[PLCamera.WidthMax].GetValue();
-           var maxHeight= mCamera.Parameters[PLCamera.HeightMax].GetValue();
+   
 
-            System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+
             //Grab
             if (!mCamera.StreamGrabber.IsGrabbing)
                 mCamera.StreamGrabber.Start(1);
@@ -140,8 +172,8 @@ namespace OpencvsharpModule.Devices
                 ErrorMessage?.Invoke($"Error: {grabResult.ErrorCode} {grabResult.ErrorDescription}");
                 goto fail;
             }
-            sw.Stop();
-            System.Diagnostics.Debug.WriteLine( sw.ElapsedMilliseconds+"ms");
+      
+        
             return mat;
 
             fail:
