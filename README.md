@@ -36,3 +36,13 @@ Basler:（如果已经安装pylon就不需要下载）：
 链接：https://pan.baidu.com/s/1Qa3mp4nc7rWKelD_Flr3ow 
 提取码：yiji
 
+
+2020.08.29
+整理opnecvcli分支，加入zbar条码解码
+
+opnecvcli需要付费开源。
+
+opecvclie运行时：
+链接：https://pan.baidu.com/s/1mhPHzHCaZzWq6_mVd45g2g 
+提取码：yiji
+
