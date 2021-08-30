@@ -4,6 +4,7 @@ using OpenCvSharp.Extensions;
 using OpenCvSharp.WpfExtensions;
 using OpencvsharpModule.Common;
 using Prism.Commands;
+using System.Collections.Generic;
 using System.Linq;
 using ZXing;
 
@@ -176,7 +177,40 @@ namespace OpencvsharpModule.Models
                     AutoRunning = false;
                 }
             });
+            AutoRunList.Add("zxing", mat =>
+            {
+                if (AutoRunning) return;
+                try
+                {
+                    AutoRunning = true;
 
+                    Src.GetBgr(out Dst);
+
+                    Dst.GetGray(out Mat gray);
+                    System.Drawing.Bitmap bitmap = BitmapConverter.ToBitmap(gray);
+                    BarcodeReader reader = new BarcodeReader();
+                    reader.Options.CharacterSet = "UTF-8";
+                    var result = reader.Decode(bitmap);
+                    if (result is not null)
+                    {
+                        List<Point2f> codePoints = new();
+                        foreach (var resultPoint in result.ResultPoints)
+                        {
+                            codePoints.Add(new(resultPoint.X, resultPoint.Y));
+                        }
+                        RotatedRect boxDilation = Cv2.MinAreaRect(codePoints);
+
+                        Dst.PutText(result.Text, boxDilation.Center.ToPoint(), HersheyFonts.HersheyDuplex, 1d, Scalar.Red);
+                        Dst.DrawPolygon(codePoints.ToArray());
+                    }
+
+                    //画框
+                }
+                finally
+                {
+                    AutoRunning = false;
+                }
+            });
             AutoRunList.Add("旋转较正", mat =>
             {
                 if (AutoRunning) return;
