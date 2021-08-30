@@ -98,7 +98,6 @@ namespace OpencvsharpModule.Models
             //                Dst.DrawRotatedRect(boxDilation, Scalar.Red, 3);
             //            }
 
-
             //        }
             //    }
             //    finally
@@ -106,6 +105,77 @@ namespace OpencvsharpModule.Models
             //        AutoRunning = false;
             //    }
             //});
+            AutoRunList.Add("二维码", mat =>
+            {
+                if (AutoRunning) return;
+                try
+                {
+                    AutoRunning = true;
+
+                    Dst = mat.Clone();
+                    QRCodeDetector qRCD = new QRCodeDetector();
+                    var qr = qRCD.DetectAndDecode(Dst, out Point2f[] codePoints);
+
+                    if (codePoints.Length > 0)
+                    {
+                        Dst.DrawPolygon(codePoints);
+                        if (qr.Length > 0)
+                        {
+                            RotatedRect boxDilation = Cv2.MinAreaRect(codePoints);
+                            Dst.PutText(qr, boxDilation.Center.ToPoint(), HersheyFonts.HersheyDuplex, 1d, Scalar.Red);
+                        }
+                    }
+                }
+                finally
+                {
+                    AutoRunning = false;
+                }
+            });
+            AutoRunList.Add("二维码 + zxing", mat =>
+            {
+                if (AutoRunning) return;
+                try
+                {
+                    AutoRunning = true;
+
+                    Src.GetBgr(out Dst);
+
+                    //找
+                    QRCodeDetector qRCD = new QRCodeDetector();
+                    var getDone = qRCD.Detect(Dst, out Point2f[] codePoints);
+
+                    //找到
+                    if (codePoints.Length > 0)
+                    {
+                        //处理码区，
+                        RotatedRect boxDilation = Cv2.MinAreaRect(codePoints);
+                        boxDilation.Size = new Size2f(boxDilation.Size.Width * 1.2, boxDilation.Size.Height * 1.2);
+                        Point2f[] boxRectPoints = new Point2f[3] {
+                                       new(0, 0), new Point2f(0,boxDilation.Size.Height) , new(boxDilation.Size.Width,boxDilation.Size.Height)};
+
+                        Mat m = Cv2.GetAffineTransform(boxDilation.Points(), boxRectPoints);
+                        Mat codeImg = new();
+                        Cv2.WarpAffine(Dst, codeImg, m, new(boxDilation.Size.Width, boxDilation.Size.Height), InterpolationFlags.Linear);
+
+                        codeImg.GetGray(out Mat gray);
+                        System.Drawing.Bitmap bitmap = BitmapConverter.ToBitmap(gray);
+                        BarcodeReader reader = new BarcodeReader();
+                        reader.Options.CharacterSet = "UTF-8";
+                        var result = reader.Decode(bitmap);
+                        if (result is not null)
+                        {
+                            Dst.PutText(result.Text, boxDilation.Center.ToPoint(), HersheyFonts.HersheyDuplex, 1d, Scalar.Red);
+                        }
+
+                        //画框
+                        Dst.DrawPolygon(codePoints);
+                    }
+                }
+                finally
+                {
+                    AutoRunning = false;
+                }
+            });
 
             AutoRunList.Add("旋转较正", mat =>
             {
@@ -392,7 +462,7 @@ namespace OpencvsharpModule.Models
                     if (mat.Type() == MatType.CV_8UC3)
                         Cv2.CvtColor(mat, gray, ColorConversionCodes.BGR2GRAY);
 
-                    var clahe =Cv2.CreateCLAHE();
+                    var clahe = Cv2.CreateCLAHE();
                     clahe.Apply(gray, gray);
                     Cv2.EqualizeHist(gray, Dst);
                 }
@@ -482,17 +552,20 @@ namespace OpencvsharpModule.Models
                 }
             }
         }
+
         private float _Gamma = 0.5f;
+
         public float Gamma
         {
             get { return _Gamma; }
-            set { SetProperty(ref _Gamma, value);
+            set
+            {
+                SetProperty(ref _Gamma, value);
                 if (Pool.SelectImage.HasValue && !Pool.SelectImage.Value.Value.Empty())
                 {
                     Src = Pool.SelectImage.Value.Value;
                     Mat gray = new();
-    
-         
+
                     if (Src.Type() == MatType.CV_8UC1)
                         gray = Src.Clone();
                     if (Src.Type() == MatType.CV_8UC3)
@@ -500,15 +573,14 @@ namespace OpencvsharpModule.Models
                     if (gray.Empty()) return;
                     Mat gammaImage = new();
                     gray.ConvertTo(gammaImage, MatType.CV_64F);
-                    gammaImage =  gammaImage.Pow(_Gamma);
+                    gammaImage = gammaImage.Pow(_Gamma);
                     Dst = new();
                     gammaImage.ConvertTo(Dst, MatType.CV_8U);
-                        ImgDst = WriteableBitmapConverter.ToWriteableBitmap(Dst);
+                    ImgDst = WriteableBitmapConverter.ToWriteableBitmap(Dst);
                 }
-
-
             }
         }
+
         private bool AutoRunning;
 
         private DelegateCommand<RotateRectROI> _DrawRotateRect;
@@ -524,7 +596,7 @@ namespace OpencvsharpModule.Models
                 new Point2f((float)rrr.CenterX, (float)rrr.CenterY),
                 new Size2f(rrr.RectWidth, rrr.RectHeight),
                 (float)rrr.RectAngle);
-            Dst.DrawRotatedRect(rr,Scalar.RandomColor());
+            Dst.DrawRotatedRect(rr, Scalar.RandomColor());
             ImgDst = WriteableBitmapConverter.ToWriteableBitmap(Dst);
         }
     }
