@@ -13,7 +13,7 @@ namespace opencvsharphelper
         protected override Window CreateShell()
         {         
             //设置程序的运行时环境
-            System.Environment.SetEnvironmentVariable("Path", @"D:/OpenCV/opencv452/;D:/OpenCV/BaslerRuntimeX64/;D:/OpenCV/MVSRuntimeX64/;");
+            System.Environment.SetEnvironmentVariable("Path", @"D:/OpenCV/Runtimes/opencv452/;D:/OpenCV/Runtimes/BaslerRuntimeX64/;D:/OpenCV/Runtimes/MVSRuntimeX64/;");
 
             return Container.Resolve<MainWindow>();
         }
