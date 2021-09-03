@@ -687,12 +687,19 @@ namespace OpencvsharpModule.Models
             }
             Rect rect = new(Pool.ROILeft, Pool.ROITop, Pool.ROIWidth, Pool.ROIHeight);
             AutoRunsw.Restart();
-            Dst.PutTextZh(Text, rect);
+            Dst.PutTextZh(Text, rect,FontSize);
 
             AutoRunsw.Stop();
             CT = AutoRunsw.ElapsedMilliseconds;
 
             ImgDst = WriteableBitmapConverter.ToWriteableBitmap(Dst);
+        }
+
+        private float _FontSize = 24;
+        public float FontSize
+        {
+            get { return _FontSize; }
+            set { SetProperty(ref _FontSize, value); }
         }
     }
 }

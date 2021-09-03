@@ -386,6 +386,8 @@
                     Content="画旋转矩" />-->
                 <TextBlock Margin="5,0,0,0" Text="文字：" />
                 <TextBox Width="100" Text="{Binding Model.Text}" />
+                <TextBlock Margin="5,0,0,0" Text="字体大小：" />
+                <TextBox Width="100" Text="{Binding Model.FontSize}" />
                 <Button
                     Width="80"
                     Margin="10,0"
