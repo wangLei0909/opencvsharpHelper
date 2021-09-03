@@ -598,15 +598,9 @@ namespace OpencvsharpModule.Models
                 if (Pool.SelectImage.HasValue && !Pool.SelectImage.Value.Value.Empty())
                 {
                     Src = Pool.SelectImage.Value.Value;
-                    Mat gray = new();
-
-                    if (Src.Type() == MatType.CV_8UC1)
-                        gray = Src.Clone();
-                    if (Src.Type() == MatType.CV_8UC3)
-                        Cv2.CvtColor(Src, gray, ColorConversionCodes.BGR2GRAY);
-                    if (gray.Empty()) return;
+ 
                     Mat gammaImage = new();
-                    gray.ConvertTo(gammaImage, MatType.CV_64F);
+                    Src.ConvertTo(gammaImage, MatType.CV_64F);
                     gammaImage = gammaImage.Pow(_Gamma);
                     Dst = new();
                     gammaImage.ConvertTo(Dst, MatType.CV_8U);
