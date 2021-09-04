@@ -151,7 +151,7 @@ namespace OpencvsharpModule.ViewModels
                     break;
             }
             DMatch[] matches = null;
-            if (FlannMatcher)
+            if (!FlannMatcher)
             {
                 BFMatcher bfmatcher = new BFMatcher();
 

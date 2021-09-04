@@ -2,6 +2,7 @@
 using ModuleCore.UserControls;
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
+using OpenCvSharp.XFeatures2D;
 using OpencvsharpModule.Common;
 using OpencvsharpModule.Models;
 using Prism.Commands;
@@ -77,7 +78,7 @@ namespace OpencvsharpModule.ViewModels
         public Mat Src { get; set; }
         public Mat Target { get; set; }
         public Mat Mask { get; set; }
-        public Mat Dst;
+        public Mat Dst = new();
 
         private DelegateCommand _GoCopyTo;
 
@@ -440,6 +441,190 @@ namespace OpencvsharpModule.ViewModels
             Cv2.WarpPerspective(mask, mask, rot, Src.Size());
             Cv2.CopyTo(dst, Dst, mask);
             ImgDst = WriteableBitmapConverter.ToWriteableBitmap(Dst);
+        }
+
+        private DelegateCommand _GoVConca;
+
+        public DelegateCommand GoVConca =>
+             _GoVConca ??= new DelegateCommand(ExecuteGoVConca);
+
+        private void ExecuteGoVConca()
+        {
+            if (!Pool.SelectImage.HasValue) return;
+            if (!Pool.SelectImage2.HasValue) return;
+            if (Pool.SelectImage.Value.Value.Empty()) return;
+            if (Pool.SelectImage2.Value.Value.Empty()) return;
+
+            Src = Pool.SelectImage.Value.Value;
+            Target = Pool.SelectImage2.Value.Value.Clone();
+            if (Target.Type() != Src.Type()) return;
+            if (Target.Width != Src.Width)
+            {
+                Cv2.Resize(Target, Target, Src.Size());
+            }
+
+            sw.Restart();
+
+            Cv2.VConcat(Src, Target, Dst);
+            sw.Stop();
+            CT = sw.ElapsedMilliseconds;
+            ImgDst = WriteableBitmapConverter.ToWriteableBitmap(Dst);
+        }
+
+        private DelegateCommand _GoHConca;
+
+        public DelegateCommand GoHConca =>
+             _GoHConca ??= new DelegateCommand(ExecuteGoHConca);
+
+        private void ExecuteGoHConca()
+        {
+            if (!Pool.SelectImage.HasValue) return;
+            if (!Pool.SelectImage2.HasValue) return;
+            if (Pool.SelectImage.Value.Value.Empty()) return;
+            if (Pool.SelectImage2.Value.Value.Empty()) return;
+
+            Src = Pool.SelectImage.Value.Value;
+            Target = Pool.SelectImage2.Value.Value.Clone();
+            if (Target.Type() != Src.Type()) return;
+            if (Target.Height != Src.Height)
+            {
+                Cv2.Resize(Target, Target, Src.Size());
+            }
+
+            sw.Restart();
+
+            Cv2.HConcat(Src, Target, Dst);
+            sw.Stop();
+            CT = sw.ElapsedMilliseconds;
+            ImgDst = WriteableBitmapConverter.ToWriteableBitmap(Dst);
+        }
+
+        private DelegateCommand _GoStitcher;
+
+        public DelegateCommand GoStitcher =>
+             _GoStitcher ??= new DelegateCommand(ExecuteGoStitcher);
+
+        private void ExecuteGoStitcher()
+        {
+            if (!Pool.SelectImage.HasValue) return;
+            if (!Pool.SelectImage2.HasValue) return;
+            if (Pool.SelectImage.Value.Value.Empty()) return;
+            if (Pool.SelectImage2.Value.Value.Empty()) return;
+
+            Src = Pool.SelectImage.Value.Value;
+            Target = Pool.SelectImage2.Value.Value.Clone();
+            if (Target.Type() != Src.Type()) return;
+            if (Target.Height != Src.Height)
+            {
+                Cv2.Resize(Target, Target, Src.Size());
+            }
+
+            sw.Restart();
+            Mat[] images = new Mat[] { Src, Target }; //数量两个以上
+            Stitcher stitcher = Stitcher.Create(Stitcher.Mode.Scans);
+
+            var status = stitcher.Stitch(images, Dst);
+            if (status != Stitcher.Status.OK)
+            {
+                return;
+            }
+
+            sw.Stop();
+            CT = sw.ElapsedMilliseconds;
+            ImgDst = WriteableBitmapConverter.ToWriteableBitmap(Dst);
+        }
+
+        private DelegateCommand _GoFeature;
+
+        public DelegateCommand GoFeature =>
+             _GoFeature ??= new DelegateCommand(ExecuteGoFeature);
+
+        private void ExecuteGoFeature()
+        {
+            if (!Pool.SelectImage.HasValue) return;
+            if (!Pool.SelectImage2.HasValue) return;
+            if (Pool.SelectImage.Value.Value.Empty()) return;
+            if (Pool.SelectImage2.Value.Value.Empty()) return;
+
+            Src = Pool.SelectImage.Value.Value;
+            Target = Pool.SelectImage2.Value.Value.Clone();
+            if (Target.Type() != Src.Type()) return;
+            if (Target.Height != Src.Height)
+            {
+                Cv2.Resize(Target, Target, Src.Size());
+            }
+            Mat dst1 = Src;
+            Mat dst2 = Target;
+            sw.Restart();
+            Mat transform = null;
+            Mat descriptors1 = new();
+            Mat descriptors2 = new();
+            KeyPoint[] kps1 = null;
+            KeyPoint[] kps2 = null;
+            SURF surfSam = SURF.Create(220);
+            surfSam.DetectAndCompute(dst1, null, out kps1, descriptors1);
+            surfSam.DetectAndCompute(dst2, null, out kps2, descriptors2);
+
+            BFMatcher bfmatcher = new BFMatcher();
+            DMatch[] matches = bfmatcher.Match(descriptors1, descriptors2);
+
+            if (matches.Length < 4)
+            {
+                CommandText = "匹配失败";
+                return;
+            }
+
+            if (matches.Length >= 4)
+            {
+                (List<DMatch>, List<Point2d>, List<Point2d>) goodRansac = Ransac(matches, kps1, kps2);
+
+                transform = Cv2.FindHomography(goodRansac.Item2, goodRansac.Item3, HomographyMethods.Ransac);
+            }
+
+            if (transform.Empty()) return;
+
+            // 对 img1 透视变换
+            var result = new Mat();
+            int w = dst2.Width;
+            int h = dst2.Height;
+            Cv2.WarpPerspective(dst1, result, transform, new Size(w * 2, h * 2));
+
+            // 将img2拼接到结果
+            result[0, h, 0, w] = dst2;
+
+            sw.Stop();
+
+            Dst = result;
+            CT = sw.ElapsedMilliseconds;
+            ImgDst = WriteableBitmapConverter.ToWriteableBitmap(Dst);
+        }
+
+        private static (List<DMatch>, List<Point2d>, List<Point2d>) Ransac(DMatch[] dMatches, KeyPoint[] queryKeyPoints, KeyPoint[] trainKeyPoint)
+        {
+            List<DMatch> reList = new();
+            List<Point2d> src1Pts = new();
+            List<Point2d> dst1Pts = new();
+            List<Point2d> srcPoints = new();
+            List<Point2d> dstPoints = new();
+
+            for (int i = 0; i < dMatches.Length; i++)
+            {
+                srcPoints.Add(new Point2d(queryKeyPoints[dMatches[i].QueryIdx].Pt.X, queryKeyPoints[dMatches[i].QueryIdx].Pt.Y));
+                dstPoints.Add(new Point2d(trainKeyPoint[dMatches[i].TrainIdx].Pt.X, trainKeyPoint[dMatches[i].TrainIdx].Pt.Y));
+            }
+            Mat inliersMask = new Mat();
+            _ = Cv2.FindHomography(srcPoints, dstPoints, HomographyMethods.Ransac, 5, inliersMask);
+            _ = inliersMask.GetArray(out byte[] inliersArray);
+            for (int i = 0; i < inliersArray.Length; i++)
+            {
+                if (inliersArray[i] != 0)
+                {
+                    reList.Add(dMatches[i]);
+                    src1Pts.Add(srcPoints[i]);
+                    dst1Pts.Add(dstPoints[i]);
+                }
+            }
+            return (reList, src1Pts, dst1Pts);
         }
 
         #endregion RotateROIList

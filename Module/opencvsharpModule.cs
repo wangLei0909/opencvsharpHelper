@@ -20,7 +20,7 @@ namespace OpencvsharpModule
             Navigate.NavigateList.Add(new NavigateItem() { ViewName = "FeatureMatchingView", IconKind = "Fingerprint", DisplayName = "匹配", UserLevel = 0, Display = true });
             Navigate.NavigateList.Add(new NavigateItem() { ViewName = "ConnectedView", IconKind = "Grain", DisplayName = "连通域", UserLevel = 0, Display = true });
             Navigate.NavigateList.Add(new NavigateItem() { ViewName = "MaskCopyView", IconKind = "ContentCopy", DisplayName = "两图运算", UserLevel = 0, Display = true });
-            Navigate.NavigateList.Add(new NavigateItem() { ViewName = "HogSvmView", IconKind = "BookOpenPageVariantOutline", DisplayName = "机器学习", UserLevel = 0, Display = true });
+            //Navigate.NavigateList.Add(new NavigateItem() { ViewName = "HogSvmView", IconKind = "BookOpenPageVariantOutline", DisplayName = "机器学习", UserLevel = 0, Display = true });
             Navigate.NavigateList.Add(new NavigateItem() { ViewName = "CornersView", IconKind = "LessThan", DisplayName = "角点检测", UserLevel = 0, Display = true });
             Navigate.NavigateList.Add(new NavigateItem() { ViewName = "RoslynView", IconKind = "ScriptTextPlayOutline", DisplayName = "脚本", UserLevel = 0, Display = true });
             Navigate.DefaultView = "CameraView";
