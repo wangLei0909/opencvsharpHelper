@@ -24,7 +24,7 @@ NLog  https://nlog-project.org/?r=redirect
 
 1、调整程序框架；
 
-2、不再集成相机运行时，如果需要请另行下载，下载后解压至D:\OpenCV\目录下：
+2、不再集成相机运行时，如果需要请另行下载，下载后解压至D:\OpenCV\Runtimes目录下：
 ：
 
 海康SDK（如果已经安装MVS就不需要下载）:
@@ -33,8 +33,8 @@ NLog  https://nlog-project.org/?r=redirect
 
 
 Basler:（如果已经安装pylon就不需要下载）：
-链接：https://pan.baidu.com/s/1Qa3mp4nc7rWKelD_Flr3ow 
-提取码：yiji
+链接：https://pan.baidu.com/s/1VkwENHA7wusdosoKpaFpBw 
+提取码：yiji 
 
 2020.08.29 整理opnecvcli分支，加入zbar（X64)条码解码
 
