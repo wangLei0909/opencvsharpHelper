@@ -2,6 +2,7 @@
 using OpenCvSharp;
 using System;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -18,23 +19,38 @@ namespace OpencvsharpModule.Devices
         /// ch:枚举 GIGE 设备 | en:Enum GIGE device
         /// </summary>
         /// <param name="needNum">指定需要发现的相机的数量</param>
+        [HandleProcessCorruptedStateExceptions]
+
         public async void InitCameras(int needNum)
         {
             await Task.Delay(100);
-            uint deviceNum;
-            do
-            {
+ 
+                uint deviceNum = 0; 
                 GC.Collect();
-                _ = MyCamera.MV_CC_EnumDevices_NET(MyCamera.MV_GIGE_DEVICE, ref StDevList);
-                deviceNum = StDevList.nDeviceNum;
-                if (deviceNum < needNum)
+                do
                 {
-                    ErrorMessage?.Invoke("未找到足够数量的相机,继续查找中……");
-                    await Task.Delay(1000);
+                    try
+                    {
+                       
+                        _ = MyCamera.MV_CC_EnumDevices_NET(MyCamera.MV_GIGE_DEVICE, ref StDevList);
+                        deviceNum = StDevList.nDeviceNum;
+                        if (deviceNum < needNum)
+                        {
+                            ErrorMessage?.Invoke("未找到足够数量的相机,继续查找中……");
+                            await Task.Delay(1000);
+                        }
+                    }
+                    catch
+                    {
+
+                        ErrorMessage?.Invoke("MVS运行时未安装");
+                        return;
+                    }
+
                 }
-            }
-            while (deviceNum < needNum);
-            if (deviceNum < 1) { ErrorMessage?.Invoke("未找到相机！"); return; }
+                while (deviceNum < needNum);
+            if (deviceNum < 1) { ErrorMessage?.Invoke("未找到海康相机！"); return; }
+        
             Initdevices();
         }
 
