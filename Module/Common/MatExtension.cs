@@ -436,11 +436,14 @@ namespace OpencvsharpModule.Common
         {
             color ??= System.Drawing.Brushes.Lime;
             font ??= new System.Drawing.Font(new System.Drawing.FontFamily("微软雅黑"), emSize);
+            if (rect.Width  == 0 ) rect.Width = 10;
+            if (rect.Height == 0 ) rect.Height = 10;
+
             if (rect.Width > src.Width) rect.Width = src.Width;
             if (rect.Height > src.Height) rect.Height = src.Height;
             if (rect.Width + rect.Left > src.Width) rect.Left = 0;
             if (rect.Height + rect.Top > src.Height) rect.Top = 0;
-
+      
             src[rect] = src[rect].DrawText(text, font, color).ToMat();
         }
 

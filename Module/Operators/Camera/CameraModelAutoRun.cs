@@ -4,6 +4,7 @@ using OpenCvSharp.Extensions;
 using OpenCvSharp.WpfExtensions;
 using OpencvsharpModule.Common;
 using Prism.Commands;
+using System.Collections.Generic;
 using System.Linq;
 using ZXing;
 
@@ -544,6 +545,27 @@ namespace OpencvsharpModule.Models
                         {
                             Cv2.Line(Dst, new(512 - len, i), new(511, i), Scalar.White);
                         }
+                    }
+                }
+                finally
+                {
+                    AutoRunning = false;
+                }
+            });
+            AutoRunList.Add("PaddleOCR", mat =>
+            {
+                if (AutoRunning) return;
+                try
+                {
+
+                    AutoRunning = true;
+                    mat.GetBgr(out Dst);
+                    var strsboxes = gocw.GetOCR(Dst);
+
+                    foreach (var item in strsboxes)
+                    {
+                        Rect rect = Cv2.BoundingRect(item.Item2);
+                        Dst.PutTextZh(item.Item1, rect, 10);
                     }
                 }
                 finally
