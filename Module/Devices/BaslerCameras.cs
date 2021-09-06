@@ -2,6 +2,7 @@
 using OpenCvSharp;
 using System;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 
 namespace OpencvsharpModule.Devices
@@ -17,23 +18,30 @@ namespace OpencvsharpModule.Devices
             AppDomain.CurrentDomain.ProcessExit += OnExit;
         }
 
+        [HandleProcessCorruptedStateExceptions]
         async public void InitCameras(int needNum = 0)
         {  // 获取所有相机信息
-            int deviceNum;
+            int deviceNum = 0;
             do
             {
                 GC.Collect();
-                allCameraInfo = CameraFinder.Enumerate();
-
-                deviceNum = allCameraInfo.Count;
-                if (deviceNum < needNum)
+                try
                 {
-                    ErrorMessage?.Invoke("未找到足够数量的相机,继续查找中……");
-                    await Task.Delay(1000);
+                    allCameraInfo = CameraFinder.Enumerate(); deviceNum = allCameraInfo.Count;
+                    if (deviceNum < needNum)
+                    {
+                        ErrorMessage?.Invoke("未找到足够数量的相机,继续查找中……");
+                        await Task.Delay(1000);
+                    }
+                }
+                catch
+                {
+                    ErrorMessage?.Invoke("Basler运行时未安装");
+                    return;
                 }
             }
             while (deviceNum < needNum);
-
+            if (deviceNum < 1) { ErrorMessage?.Invoke("未找到相机！"); return; }
             Initdevices();
         }
 

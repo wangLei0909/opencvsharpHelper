@@ -52,3 +52,10 @@ zbarX64运行时:
 
 链接：https://pan.baidu.com/s/1ZYkwkvoq8oI6jml8UQVLUA 
 提取码：yiji
+
+运行时文件的放置目录应该与App.xaml.cs中的这句设置一致：
+
+```csharp
+//设置程序的运行时环境
+System.Environment.SetEnvironmentVariable("Path", @"D:/OpenCV/Runtimes/opencv452/;D:/OpenCV/Runtimes/zbarX64Runtime/;D:/OpenCV/Runtimes/BaslerRuntimeX64/;D:/OpenCV/Runtimes/MVSRuntimeX64/;C:\Program Files\Basler\pylon 6\Runtime\x64;C:\Program Files (x86)\Common Files\MVS\Runtime\Win64_x64;");
+```
