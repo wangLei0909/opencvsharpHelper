@@ -46,7 +46,10 @@
                         <RowDefinition Height="1*" />
                         <RowDefinition Height="1*" />
                     </Grid.RowDefinitions>
-                    <imageview:ImageEdit Grid.Row="0" ImageSource="{Binding Pool.ImgSrc}" RotateROIList="{Binding RotateROIList}" />
+                    <imageview:ImageEdit
+                        Grid.Row="0"
+                        ImageSource="{Binding Pool.ImgSrc}"
+                        RotateROIList="{Binding RotateROIList}" />
                     <imageview:ImageEdit Grid.Row="1" ImageSource="{Binding Pool.ImgSrc2}" />
 
                 </Grid>
@@ -128,28 +131,28 @@
                         Margin="5"
                         Orientation="Horizontal">
 
-      
-                            <Button
-                                Width="60"
-                                Command="{Binding GoCopyTo}"
-                                Content="蒙版复制" />
 
                         <Button
-                                Width="60"
-                                Command="{Binding GoAdditive}"
-                                Content="相加" />
+                            Width="60"
+                            Command="{Binding GoCopyTo}"
+                            Content="蒙版复制" />
+
                         <Button
-                                Width="60"
-                                Command="{Binding GoSrcMinusTarget}"
-                                Content="源减目标" />
+                            Width="60"
+                            Command="{Binding GoAdditive}"
+                            Content="相加" />
                         <Button
-                                Width="60"
-                                Command="{Binding GoTargetMinusSrc}"
-                                Content="目标减源" />
+                            Width="60"
+                            Command="{Binding GoSrcMinusTarget}"
+                            Content="源减目标" />
                         <Button
-                                Width="60"
-                                Command="{Binding GoSrcDiffTarget}"
-                                Content="两图差异" />
+                            Width="60"
+                            Command="{Binding GoTargetMinusSrc}"
+                            Content="目标减源" />
+                        <Button
+                            Width="60"
+                            Command="{Binding GoSrcDiffTarget}"
+                            Content="两图差异" />
                     </StackPanel>
                 </TabItem>
                 <TabItem Header="混合">
@@ -160,46 +163,47 @@
 
 
                         <Button
-                                Width="60"
-                                Command="{Binding GoAddWeighted}"
-                                Content="线性混合" />
+                            Width="60"
+                            Command="{Binding GoAddWeighted}"
+                            Content="线性混合" />
                         <StackPanel Margin="5,0" Orientation="Horizontal">
                             <TextBlock Text="源权重：" />
                             <Slider
-                            Width="120"
-                            IsMoveToPointEnabled="True"
-                            Maximum="1"
-                            Minimum="0.01"
-                            Value="{Binding Alpha}" />
+                                Width="120"
+                                IsMoveToPointEnabled="True"
+                                Maximum="1"
+                                Minimum="0.01"
+                                Value="{Binding Alpha}" />
                             <TextBlock Text="{Binding Alpha, StringFormat={}{0:F3}}" />
                         </StackPanel>
                         <StackPanel Margin="50,0" Orientation="Horizontal">
-                            <TextBlock  Text="目标权重：" />
+                            <TextBlock Text="目标权重：" />
                             <Slider
-                            Width="120"
-                            IsMoveToPointEnabled="True"
-                            Maximum="1"
-                            Minimum="0.01"
-                            Value="{Binding Beta}" />
+                                Width="120"
+                                IsMoveToPointEnabled="True"
+                                Maximum="1"
+                                Minimum="0.01"
+                                Value="{Binding Beta}" />
                             <TextBlock Text="{Binding Beta, StringFormat={}{0:F3}}" />
                         </StackPanel>
-              
-                            
-                       
-                        <Button Margin="50,0,10,0"
-                                Width="60"
-                                Command="{Binding GoSeamlessClone}"
-                                Content="泊松融合" />
+
+
+
+                        <Button
+                            Width="60"
+                            Margin="50,0,10,0"
+                            Command="{Binding GoSeamlessClone}"
+                            Content="泊松融合" />
                         <TextBlock Text="泊松融合方法：" />
                         <ComboBox
-                                Width="160"
-                                DisplayMemberPath="Key"
-                                ItemsSource="{Binding SeamlessCloneMethodList}"
-                                SelectedValue="{Binding SeamlessCloneMethodThis}"
-                                SelectedValuePath="Value" />
-             
+                            Width="160"
+                            DisplayMemberPath="Key"
+                            ItemsSource="{Binding SeamlessCloneMethodList}"
+                            SelectedValue="{Binding SeamlessCloneMethodThis}"
+                            SelectedValuePath="Value" />
+
                     </StackPanel>
-                    
+
                 </TabItem>
                 <TabItem Header="旋转区域">
                     <StackPanel
@@ -209,15 +213,46 @@
 
 
                         <Button
-                                Width="120"
-                                Command="{Binding GoGetRotateROIList}"
-                                Content="旋转区域取出" />
+                            Width="120"
+                            Command="{Binding GoGetRotateROIList}"
+                            Content="旋转区域取出" />
 
 
                         <Button
-                                Width="120"
-                                Command="{Binding GoSetRotateROIList}"
-                                Content="旋转区域嵌入" />
+                            Width="120"
+                            Command="{Binding GoSetRotateROIList}"
+                            Content="旋转区域嵌入" />
+                    </StackPanel>
+
+                </TabItem>
+                <TabItem Header="拼接">
+                    <StackPanel
+                        Height="40"
+                        Margin="5"
+                        Orientation="Horizontal">
+
+
+                        <Button
+                            Width="120"
+                            Command="{Binding GoVConca}"
+                            Content="简单拼接上下" />
+
+
+                        <Button
+                            Width="120"
+                            Command="{Binding GoHConca}"
+                            Content="简单拼接左右" />
+
+
+                        <Button
+                            Width="120"
+                            Command="{Binding GoStitcher}"
+                            Content="Stitcher拼接" />
+
+                        <Button
+                            Width="120"
+                            Command="{Binding GoFeature}"
+                            Content="特征拼接" />
                     </StackPanel>
 
                 </TabItem>

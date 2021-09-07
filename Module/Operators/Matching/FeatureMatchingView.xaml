@@ -13,7 +13,7 @@
     xmlns:z="clr-namespace:ModuleCore.UserControls;assembly=ModuleCore"
     d:DataContext="{d:DesignInstance Type=viewmodels:FeatureMatchingViewModel}"
     d:DesignHeight="450"
-    d:DesignWidth="800"
+    d:DesignWidth="1200"
     prism:ViewModelLocator.AutoWireViewModel="True"
     Background="White"
     mc:Ignorable="d">
@@ -304,6 +304,9 @@
                             Command="{Binding GoShapesMatche}"
                             Content="匹配" />
                         <CheckBox  Content="最小外接矩" Margin="10,0" IsChecked="{Binding GetRotatedRect}"   />
+                   
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
                         <TextBlock Margin="5,0,0,0" Text="最低匹配分数：" />
                         <Slider
                             Width="120"
@@ -313,10 +316,8 @@
                             Value="{Binding MinScore}" />
                         <TextBlock Text="{Binding MinScore, StringFormat={}{0:F2}}" />
                         <TextBlock Margin="5,0,0,0" Text="最高匹配分数：" />
- 
+
                         <TextBlock Text="{Binding MaxScore, StringFormat={}{0:F6}}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
                         <TextBlock Text="长度筛选：" />
                         <z:RangeSlider
                                         EndValue="{Binding LenghtHigh}"
@@ -324,6 +325,36 @@
                                         Minimum="1"
                                         SilderWidth="200"
                                         StartValue="{Binding LenghtLow}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+
+
+                        <!--<Button
+                    Width="60"
+                    Margin="5,0"
+                    Command="{Binding GoMinAreaRect}"
+                    Content="外接矩" />
+                <Button
+                    Width="60"
+                    Margin="5,0"
+                    Command="{Binding GoMinAreaTriangle}"
+                    Content="外接三角" />
+                <Button
+                    Width="60"
+                    Margin="5,0"
+                    Command="{Binding GoMinAreaCircle}"
+                    Content="外接圆" />-->
+                        <Button
+                    Width="60"
+                    Margin="5,0"
+                    Command="{Binding GoInCircle}"
+                    Content="内切圆" />
+                        <Button
+                    Width="60"
+                    Margin="5,0"
+                    Command="{Binding GoGetCenter}"
+                    Content="轮廓中心" />
+
                     </StackPanel>
                 </StackPanel>
             </TabItem>

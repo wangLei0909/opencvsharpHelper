@@ -151,7 +151,7 @@ namespace OpencvsharpModule.ViewModels
                     break;
             }
             DMatch[] matches = null;
-            if (FlannMatcher)
+            if (!FlannMatcher)
             {
                 BFMatcher bfmatcher = new BFMatcher();
 
@@ -543,7 +543,77 @@ namespace OpencvsharpModule.ViewModels
             get { return _LenghtLow; }
             set { SetProperty(ref _LenghtLow, value); }
         }
+        private DelegateCommand _GoInCircle;
 
+        public DelegateCommand GoInCircle =>
+             _GoInCircle ??= new DelegateCommand(ExecuteGoInCircle);
+
+        private void ExecuteGoInCircle()
+        {
+            if (!PoolData.SelectContour1.HasValue) return;
+
+            var coutour = PoolData.SelectContour1.Value.Value;
+            var left = coutour.Min(p => p.X);
+            var top = coutour.Min(P => P.Y);
+            var w = coutour.Max(p => p.X);
+            var h = coutour.Max(p => p.Y);
+
+            Mat mat = new(h, w, MatType.CV_8UC1, Scalar.Black);
+
+            List<Point[]> pointsList = new() { coutour };
+
+            Cv2.DrawContours(mat, pointsList, 0, Scalar.White, -1);
+
+            if (!mat.FindNonZero().GetArray(out Point[] points)) return;
+
+            double maxdist = 0d, dist;
+            Point center = new Point();
+            for (int i = 0; i < points.Length; i++)
+            {
+                dist = Cv2.PointPolygonTest(coutour, points[i], true);
+                if (dist > maxdist)
+                {
+                    maxdist = dist;
+                    center = points[i];
+                }
+            }
+            mat = mat.CvtColor(ColorConversionCodes.GRAY2BGR);
+            Cv2.Circle(mat, center, (int)maxdist, Scalar.Red);
+            Dst = mat[top, h, left, w].Clone();
+            ImgDst = WriteableBitmapConverter.ToWriteableBitmap(Dst);
+        }
+
+        private DelegateCommand _GoGetCenter;
+
+        public DelegateCommand GoGetCenter =>
+             _GoGetCenter ??= new DelegateCommand(ExecuteGoGetCenter);
+
+        private void ExecuteGoGetCenter()
+        {
+            if (!PoolData.SelectContour1.HasValue) return;
+
+            var coutour = PoolData.SelectContour1.Value.Value;
+            var left = coutour.Min(p => p.X);
+            var top = coutour.Min(P => P.Y);
+            var w = coutour.Max(p => p.X);
+            var h = coutour.Max(p => p.Y);
+
+            Mat mat = new(h, w, MatType.CV_8UC3, Scalar.Black);
+
+            List<Point[]> pointsList = new() { coutour };
+
+            Cv2.DrawContours(mat, pointsList, 0, Scalar.White, -1);
+
+            /// 计算矩
+            Moments mu = Cv2.Moments(coutour, true);
+            ///  计算中心矩:
+            Point2d mc = new Point2d(mu.M10 / mu.M00, mu.M01 / mu.M00);
+
+            //画结果
+            Cv2.Circle(mat, (Point)mc, 1, Scalar.Red);
+            Dst = mat[top, h, left, w];
+            ImgDst = WriteableBitmapConverter.ToWriteableBitmap(Dst);
+        }
         #endregion MatcheShapes
     }
 }

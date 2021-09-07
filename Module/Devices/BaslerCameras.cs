@@ -18,14 +18,15 @@ namespace OpencvsharpModule.Devices
             AppDomain.CurrentDomain.ProcessExit += OnExit;
         }
 
+
         [HandleProcessCorruptedStateExceptions]
         async public void InitCameras(int needNum = 0)
         {  // 获取所有相机信息
-            int deviceNum = 0;
+            int deviceNum = 0;  
+            GC.Collect();
             do
             {
-                GC.Collect();
-                try
+              try
                 {
                     allCameraInfo = CameraFinder.Enumerate(); deviceNum = allCameraInfo.Count;
                     if (deviceNum < needNum)
@@ -41,7 +42,8 @@ namespace OpencvsharpModule.Devices
                 }
             }
             while (deviceNum < needNum);
-            if (deviceNum < 1) { ErrorMessage?.Invoke("未找到相机！"); return; }
+            if (deviceNum < 1) { ErrorMessage?.Invoke("未找到Basler相机！"); return; }
+
             Initdevices();
         }
 

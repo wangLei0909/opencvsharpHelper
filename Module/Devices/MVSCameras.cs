@@ -20,33 +20,37 @@ namespace OpencvsharpModule.Devices
         /// </summary>
         /// <param name="needNum">指定需要发现的相机的数量</param>
         [HandleProcessCorruptedStateExceptions]
+
         public async void InitCameras(int needNum)
         {
             await Task.Delay(100);
-            uint deviceNum = 0;
-            do
-            {
-                try
+ 
+                uint deviceNum = 0; 
+                GC.Collect();
+                do
                 {
-                    GC.Collect();
-                    _ = MyCamera.MV_CC_EnumDevices_NET(MyCamera.MV_GIGE_DEVICE, ref StDevList);
-                    deviceNum = StDevList.nDeviceNum;
-                    if (deviceNum < needNum)
+                    try
                     {
-                        ErrorMessage?.Invoke("未找到足够数量的相机,继续查找中……");
-                        await Task.Delay(1000);
+                       
+                        _ = MyCamera.MV_CC_EnumDevices_NET(MyCamera.MV_GIGE_DEVICE, ref StDevList);
+                        deviceNum = StDevList.nDeviceNum;
+                        if (deviceNum < needNum)
+                        {
+                            ErrorMessage?.Invoke("未找到足够数量的相机,继续查找中……");
+                            await Task.Delay(1000);
+                        }
                     }
-                }
-                catch  
-                {
+                    catch
+                    {
 
-                    ErrorMessage?.Invoke("MVS运行时未安装");
-                    return;
+                        ErrorMessage?.Invoke("MVS运行时未安装");
+                        return;
+                    }
+
                 }
-       
-            }
-            while (deviceNum < needNum);
-            if (deviceNum < 1) { ErrorMessage?.Invoke("未找到相机！"); return; }
+                while (deviceNum < needNum);
+            if (deviceNum < 1) { ErrorMessage?.Invoke("未找到海康相机！"); return; }
+        
             Initdevices();
         }
 
