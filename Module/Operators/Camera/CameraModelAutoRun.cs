@@ -565,7 +565,7 @@ namespace OpencvsharpModule.Models
                     foreach (var item in strsboxes)
                     {
                         Rect rect = Cv2.BoundingRect(item.Item2);
-                        Dst.PutTextZh(item.Item1, rect, 10);
+                        Dst.PutTextZh(item.Item1, rect, FontSize);
                     }
                 }
                 finally
