@@ -21,7 +21,8 @@ NLog  https://nlog-project.org/?r=redirect
 
 交流QQ群：827888895
 
-## 推荐关注另一个opencvsharp开源项目：https://gitee.com/lolo77/OpenCVVision，这个项目演示了3D结构光，光度立体法等一些酷炫的应用，非常棒！
+###  推荐关注另一个opencvsharp开源项目：https://gitee.com/lolo77/OpenCVVision，
+###  这个项目演示了3D结构光，光度立体法等一些酷炫的应用，非常棒！
 
 ## 更新日志：
 2020.08.27：
@@ -58,6 +59,6 @@ https://blog.csdn.net/tfarcraw/article/details/117902521?spm=1001.2014.3001.5501
 在我的博客中有介绍：
 https://blog.csdn.net/tfarcraw/article/details/115561759?spm=1001.2014.3001.5501
 
-opnecvcli分支不再免费开源，捐助本项目后可获得源码。如有需要请联系QQ:123211521 微信17551023102
+opnecvcli分支不免费开源，为本项目贡献代码或捐助本项目后可获得源码。如有需要请联系QQ:123211521 微信17551023102
 
 ![avatar](juanzeng.png),
