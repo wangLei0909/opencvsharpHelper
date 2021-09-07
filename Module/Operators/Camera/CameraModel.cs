@@ -195,7 +195,7 @@ namespace OpencvsharpModule.Models
             if (!Pool.SelectImage.HasValue) return;
             Src = Pool.SelectImage.Value.Value;
             if (Src is null || Src.Empty()) return;
-
+            GC.Collect();
             AutoRunsw.Restart();
             AutoRun.Value.Invoke(Src);
             AutoRunsw.Stop();
