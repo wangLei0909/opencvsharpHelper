@@ -182,6 +182,10 @@ namespace OpencvsharpModule.ViewModels
             {
                 Cv2.Resize(Target, Target, Src.Size());
             }
+            if (Target.Type() != Src.Type())
+            {
+                return;
+            }
             sw.Restart();
             Dst = Target - Src;
             sw.Stop();
