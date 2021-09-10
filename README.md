@@ -1,7 +1,7 @@
 ## 简单介绍：
 看这篇博客快速了解：
 https://blog.csdn.net/tfarcraw/article/details/108028209?spm=1001.2014.3001.5501
- ![avatar](main.jpg),
+ ![avatar](main.jpg)
  
 
 目标框架：.NET5.0
@@ -42,7 +42,7 @@ Basler:（如果已经安装pylon就不需要下载）：
 
 2020.08.29 整理opnecvcli分支，加入zbar（X64)条码解码
 
-opnecvcli分支演示了把opencv包装成c++/clr的方法，实现opencv和opencvsharp直接传Mat，使调用原生opencv时更加灵活。
+opnecvcli分支演示了把opencv包装成c++/cli的方法，实现opencv和opencvsharp直接传Mat，使调用原生opencv时更加灵活。
 
 这个分支目前演示了以下功能：
 
@@ -60,4 +60,4 @@ https://blog.csdn.net/tfarcraw/article/details/115561759?spm=1001.2014.3001.5501
 
 opnecvcli分支不免费开源，为本项目贡献代码或捐助本项目后可获得源码。如有需要请联系QQ:123211521 微信17551023102
 
-![avatar](juanzeng.png),
+<img src="juanzeng.png" width="20%">
