@@ -1,6 +1,7 @@
 ﻿using ModuleCore.Mvvm;
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
+using OpenCvSharp.XImgProc;
 using OpencvsharpModule.Models;
 using OpencvsharpModule.Views;
 using Prism.Commands;
@@ -31,6 +32,10 @@ namespace OpencvsharpModule.ViewModels
             ThresholdTypeList.Add("Trunc", ThresholdTypes.Trunc);
             AdaptiveThresholdTypeList.Add("GaussianC", AdaptiveThresholdTypes.GaussianC);
             AdaptiveThresholdTypeList.Add("MeanC", AdaptiveThresholdTypes.MeanC);
+            LocalBinarizationMethodsList.Add("Niblack", LocalBinarizationMethods.Niblack);
+            LocalBinarizationMethodsList.Add("Nick", LocalBinarizationMethods.Nick);
+            LocalBinarizationMethodsList.Add("Sauvola", LocalBinarizationMethods.Sauvola);
+            LocalBinarizationMethodsList.Add("Wolf", LocalBinarizationMethods.Wolf);
         }
 
         private ObservableDictionary<string, ThresholdTypes> _thresholdTypeList = new();
@@ -48,6 +53,23 @@ namespace OpencvsharpModule.ViewModels
             get { return _thresholdTypeThis; }
             set { SetProperty(ref _thresholdTypeThis, value); }
         }
+
+        private ObservableDictionary<string, LocalBinarizationMethods> _LocalBinarizationMethodsList = new();
+
+        public ObservableDictionary<string, LocalBinarizationMethods> LocalBinarizationMethodsList
+        {
+            get { return _LocalBinarizationMethodsList; }
+            set { SetProperty(ref _LocalBinarizationMethodsList, value); }
+        }
+
+        private LocalBinarizationMethods  _LocalBinarizationMethodsThis;
+
+        public LocalBinarizationMethods LocalBinarizationMethodsThis
+        {
+            get { return _LocalBinarizationMethodsThis; }
+            set { SetProperty(ref _LocalBinarizationMethodsThis, value); }
+        }
+
 
         private bool _isOtsu;
 
@@ -268,11 +290,42 @@ namespace OpencvsharpModule.ViewModels
         }
 
 
-    #endregion AdaptiveThreshold
+        #endregion AdaptiveThreshold
+
+        #region  局部阈值
+
+        private int _LocalBlockSize = 3;
+        public int LocalBlockSize
+        {
+            get { return _LocalBlockSize; }
+            set { SetProperty(ref _LocalBlockSize, value); GoNiblackThreshold(); }
+        }
+
+        private float _K = 0.5f;
+        public float K
+        {
+            get { return _K; }
+            set { SetProperty(ref _K, value); GoNiblackThreshold(); }
+        }
+
+        private void GoNiblackThreshold()
+        {
+            if (!Pool.SelectImage.HasValue) return;
+
+            if (Pool.SelectImage.Value.Value.Channels() == 3)
+                Src = Pool.SelectImage.Value.Value.CvtColor(ColorConversionCodes.BGR2GRAY);
+            else Pool.SelectImage.Value.Value.CopyTo(Src);
+
+             
+            CvXImgProc.NiblackThreshold(Src, Dst, 255, ThresholdTypeThis, LocalBlockSize, K,LocalBinarizationMethodsThis);
+                     ImgDst = WriteableBitmapConverter.ToWriteableBitmap(Dst);
+            CommandText = $"CvXImgProc.NiblackThreshold(Src, Dst, 255, {ThresholdTypeThis}, {LocalBlockSize}, {K},{BlockSize},{LocalBinarizationMethodsThis});";
+        }
+        #endregion
 
 
-    #region inrange
-    private void GoInRange()
+        #region inrange
+        private void GoInRange()
     {
         if (!Pool.SelectImage.HasValue || Pool.SelectImage.Value.Value.Empty()) return;
         Src = Pool.SelectImage.Value.Value;

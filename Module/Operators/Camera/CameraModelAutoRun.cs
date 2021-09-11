@@ -4,7 +4,6 @@ using OpenCvSharp.Extensions;
 using OpenCvSharp.WpfExtensions;
 using OpencvsharpModule.Common;
 using Prism.Commands;
-using System.Collections.Generic;
 using System.Linq;
 using ZXing;
 
@@ -118,11 +117,8 @@ namespace OpencvsharpModule.Models
                     foreach (var box in boxes)     //条码盒子
                     {
                         Mat mask = Dst.EmptyClone() * 0;
-                        
-                  
+
                         RotatedRect boxDilation = Cv2.MinAreaRect(box);
-                   
-           
 
                         Point2f[] boxRectPoints = new Point2f[3] {
                             new(0, 0), new Point2f(0,boxDilation.Size.Height) , new(boxDilation.Size.Width,boxDilation.Size.Height)};
@@ -136,7 +132,7 @@ namespace OpencvsharpModule.Models
                             Cv2.Flip(codeImg, codeImg, FlipMode.Y);
                         }
                         //识别
-              
+
                         codeImg.GetGray(out Mat itemGray);
                         bool reDecode = false;
                     ReDecode:
@@ -150,9 +146,8 @@ namespace OpencvsharpModule.Models
                         }
 
                         if (barcodes.Count == 0)
-                        
-                        {
 
+                        {
                             if (boxDilation.Size.Width > boxDilation.Size.Height)
                                 boxDilation.Size = new(boxDilation.Size.Width * 1.3, boxDilation.Size.Height * 1.8);
                             else
@@ -161,8 +156,8 @@ namespace OpencvsharpModule.Models
                             boxRectPoints = new Point2f[3] {
                             new(0, 0), new Point2f(0,boxDilation.Size.Height) , new(boxDilation.Size.Width,boxDilation.Size.Height)};
 
-                             m = Cv2.GetAffineTransform(boxDilation.Points(), boxRectPoints);
-                    
+                            m = Cv2.GetAffineTransform(boxDilation.Points(), boxRectPoints);
+
                             Cv2.WarpAffine(Dst, codeImg, m, new(boxDilation.Size.Width, boxDilation.Size.Height), InterpolationFlags.Linear);
 
                             if (codeImg.Height > codeImg.Width)
@@ -174,7 +169,6 @@ namespace OpencvsharpModule.Models
 
                             barcodes = gocw.zbarDeBarcode(itemGray);
                         }
-
 
                         Dst.GetBgr(out Mat bgr);
 
@@ -557,7 +551,6 @@ namespace OpencvsharpModule.Models
                 if (AutoRunning) return;
                 try
                 {
-
                     AutoRunning = true;
                     mat.GetBgr(out Dst);
                     var strsboxes = gocw.GetOCR(Dst);
@@ -565,7 +558,7 @@ namespace OpencvsharpModule.Models
                     foreach (var item in strsboxes)
                     {
                         Rect rect = Cv2.BoundingRect(item.Item2);
-                        Dst.PutTextZh(item.Item1, rect, FontSize);
+                        Dst.PutTextZh(item.Item1 + ":" + item.Item3.ToString("F2"), rect, FontSize);
                     }
                 }
                 finally
@@ -604,7 +597,7 @@ namespace OpencvsharpModule.Models
                 if (Pool.SelectImage.HasValue && !Pool.SelectImage.Value.Value.Empty())
                 {
                     Src = Pool.SelectImage.Value.Value;
- 
+
                     Mat gammaImage = new();
                     Src.ConvertTo(gammaImage, MatType.CV_64F);
                     gammaImage = gammaImage.Pow(_Gamma);

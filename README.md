@@ -1,7 +1,7 @@
 ## 简单介绍：
 看这篇博客快速了解：
 https://blog.csdn.net/tfarcraw/article/details/108028209?spm=1001.2014.3001.5501
- ![avatar](main.jpg),
+ ![avatar](main.jpg =100x20) 
  
 
 目标框架：.NET5.0
