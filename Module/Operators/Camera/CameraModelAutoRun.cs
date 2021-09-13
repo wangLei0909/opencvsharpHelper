@@ -4,7 +4,9 @@ using OpenCvSharp.Extensions;
 using OpenCvSharp.WpfExtensions;
 using OpencvsharpModule.Common;
 using Prism.Commands;
+
 using System.Linq;
+using System.Text;
 using ZXing;
 
 namespace OpencvsharpModule.Models
@@ -16,6 +18,29 @@ namespace OpencvsharpModule.Models
         private void LoadAutoRun()
         {
             AutoRunList.Add("无处理", mat => Dst = mat);
+            AutoRunList.Add("Datamatrix", mat =>
+            {
+                if (AutoRunning) return;
+                try
+                {
+                    AutoRunning = true;
+                    Dst = mat.Clone();
+                    Dst.GetGray(out Mat gray);
+                    var boxes = gocw.GetDM(gray,2000);
+
+                    foreach (var box in boxes)
+                    {
+                        var code = box.Item1;
+                        var point = box.Item2[0];
+                        Dst.PutText(code , point, HersheyFonts.HersheyDuplex, 1d, Scalar.Red);
+                    }
+                }
+                finally
+                {
+                    AutoRunning = false;
+                }
+            });
+
             AutoRunList.Add("微信二维码", mat =>
             {
                 if (AutoRunning) return;

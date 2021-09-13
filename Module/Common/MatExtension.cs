@@ -432,10 +432,10 @@ namespace OpencvsharpModule.Common
             return (angelD, magImg);
         }
 
-        public static void PutTextZh(this Mat src, string text, Rect rect, float emSize = 36, System.Drawing.Font font = null, System.Drawing.Brush color = null)
+        public static void PutTextZh(this Mat src, string text, Rect rect, float emSize = 36, System.Drawing.Brush color = null)
         {
             color ??= System.Drawing.Brushes.Lime;
-            font ??= new System.Drawing.Font(new System.Drawing.FontFamily("微软雅黑"), emSize);
+            var font = new System.Drawing.Font(new System.Drawing.FontFamily("微软雅黑"), emSize);
             if (rect.Width  == 0 ) rect.Width = 10;
             if (rect.Height == 0 ) rect.Height = 10;
 
@@ -443,24 +443,20 @@ namespace OpencvsharpModule.Common
             if (rect.Height > src.Height) rect.Height = src.Height;
             if (rect.Width + rect.Left > src.Width) rect.Left = 0;
             if (rect.Height + rect.Top > src.Height) rect.Top = 0;
-      
-            src[rect] = src[rect].DrawText(text, font, color).ToMat();
+            var bitmap = src[rect].DrawText(text, font, color);
+            src[rect] = bitmap.ToMat();
+            bitmap.Dispose();
+            font.Dispose();
         }
 
         private static System.Drawing.Bitmap DrawText(this Mat mat, string str, System.Drawing.Font font, System.Drawing.Brush color)
         {
-            //if (color == System.Drawing.Brushes.Black)
-            //{
-            //    System.Drawing.Color newcolor = System.Drawing.Color.FromArgb(1, 1, 1);
-
-            //    color = new System.Drawing.SolidBrush(newcolor);
-            //}
 
             System.Drawing.Bitmap bitmap = mat.ToBitmap();
             System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(bitmap);
             graphics.DrawString(str, font, color, new System.Drawing.PointF(0, 0));
             graphics.Flush();
-
+            graphics.Dispose();
             return bitmap;
         }
 
