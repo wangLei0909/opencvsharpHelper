@@ -1,4 +1,4 @@
-﻿namespace ModuleCore.Common
+﻿namespace ModuleCore.Common.Authority
 {
     /// <summary>
     /// 权限

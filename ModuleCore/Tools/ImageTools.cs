@@ -5,12 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
-namespace ModuleCore.Common.Converters
+namespace ModuleCore.Common
 {
     /// <summary>
     /// 图标操作类
     /// </summary>
-    public class ImageHelper
+    public class ImageTools
     {
         /// <summary>
         /// 获取背景预览图
@@ -31,7 +31,7 @@ namespace ModuleCore.Common.Converters
                         skins.Add(new SkinNode()
                         {
                             Name = arg.Name,
-                            Image = ImageHelper.ConvertToImage(arg.FullName)
+                            Image = ImageTools.ConvertToImage(arg.FullName)
                         });
                     });
                     return skins;

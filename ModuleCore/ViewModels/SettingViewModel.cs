@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using ModuleCore.Common;
+using ModuleCore.Common.Authority;
 
 namespace ModuleCore.ViewModels
 {

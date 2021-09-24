@@ -3,7 +3,7 @@ using Prism.Mvvm;
 using System;
 using System.Threading.Tasks;
 
-namespace ModuleCore.Common
+namespace ModuleCore.Models
 {
     public class ErrModel : BindableBase
     {

@@ -18,11 +18,11 @@ namespace ModuleCore.Common.Converters
                 string fileurl = $"{AppDomain.CurrentDomain.BaseDirectory}Skin\\Kind\\{value}";
                 if (File.Exists(fileurl))
                 {
-                    BitmapImage fileImg = ImageHelper.ConvertToImage(fileurl);
+                    BitmapImage fileImg = ImageTools.ConvertToImage(fileurl);
                     return fileImg;
                 }
             }
-            BitmapImage img = ImageHelper.ConvertToImage($"{AppDomain.CurrentDomain.BaseDirectory}Images\\background.png");
+            BitmapImage img = ImageTools.ConvertToImage($"{AppDomain.CurrentDomain.BaseDirectory}Images\\background.png");
             return img;
         }
 

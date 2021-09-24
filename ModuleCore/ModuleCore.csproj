@@ -9,9 +9,9 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Images\alter.png" />
+    <None Remove="Images\button.png" />
     <None Remove="Images\Home, homepage, menu.png" />
     <None Remove="Images\success.png" />
-    <None Remove="Images\按钮.png" />
     <None Remove="UserControls\full_screen.png" />
     <None Remove="UserControls\ICON\ashbin.png" />
     <None Remove="UserControls\ICON\full.png" />
@@ -43,7 +43,7 @@
     <Resource Include="Images\success.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Images\按钮.png">
+    <Resource Include="Images\button.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="UserControls\ICON\ashbin.png" />

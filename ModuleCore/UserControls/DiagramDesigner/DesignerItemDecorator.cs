@@ -18,7 +18,7 @@ namespace ModuleCore.UserControls.DiagramDesigner
 
         public static readonly DependencyProperty ShowDecoratorProperty =
             DependencyProperty.Register("ShowDecorator", typeof(bool), typeof(DesignerItemDecorator),
-            new FrameworkPropertyMetadata(false, new PropertyChangedCallback(ShowDecoratorProperty_Changed)));
+            new FrameworkPropertyMetadata(true, new PropertyChangedCallback(ShowDecoratorProperty_Changed)));
 
         public DesignerItemDecorator()
         {
@@ -37,6 +37,7 @@ namespace ModuleCore.UserControls.DiagramDesigner
         {
             if (this.adorner == null)
             {
+                //得到装饰层
                 AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(this);
 
                 if (adornerLayer != null)
