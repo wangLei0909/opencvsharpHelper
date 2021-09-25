@@ -191,6 +191,58 @@
                 <TabItem
                     Height="19"
                     VerticalAlignment="Top"
+                    Header="局部阈值">
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Bottom">
+                            <StackPanel
+                                Height="20"
+                                Margin="1"
+                                Orientation="Horizontal">
+                                <TextBlock Text="ThresholdType：" />
+
+                                <ComboBox
+                                    Width="80"
+                                    Height="20"
+                                    DisplayMemberPath="Key"
+                                    ItemsSource="{Binding ThresholdTypeList}"
+                                    SelectedValue="{Binding ThresholdTypeThis}"
+                                    SelectedValuePath="Value" />
+                                <TextBlock Text="LocalBinarizationMethods：" />
+                                <ComboBox
+                                    Width="80"
+                                    DisplayMemberPath="Key"
+                                    ItemsSource="{Binding LocalBinarizationMethodsList}"
+                                    SelectedValue="{Binding LocalBinarizationMethodsThis}"
+                                    SelectedValuePath="Value" />
+
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+
+                   
+                                <TextBlock Text="BlockSize：" />
+                                <Slider
+                                    Width="120"
+                                    IsMoveToPointEnabled="True"
+                                    Minimum="3"
+                                    
+                                    Maximum="7"
+                                    TickFrequency="2"
+                                    IsSnapToTickEnabled ="True"
+                                    Value="{Binding LocalBlockSize}" />
+                                <TextBlock Text="K：" />
+                                <Slider
+                                    Width="120"
+                                    IsMoveToPointEnabled="True"
+                                    Maximum="1"
+                                    Value="{Binding K}" />
+                            </StackPanel>
+                        </StackPanel>
+
+                    </DockPanel>
+                </TabItem>
+                <TabItem
+                    Height="19"
+                    VerticalAlignment="Top"
                     Header="InRange">
                     <DockPanel>
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">

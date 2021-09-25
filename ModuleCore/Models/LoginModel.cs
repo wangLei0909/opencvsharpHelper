@@ -1,4 +1,5 @@
 ﻿using ModuleCore.Common;
+using ModuleCore.Common.Authority;
 using ModuleCore.Mvvm;
 using ModuleCore.Services;
 using Prism.Mvvm;

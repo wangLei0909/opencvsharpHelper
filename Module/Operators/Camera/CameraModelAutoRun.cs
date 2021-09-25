@@ -4,127 +4,35 @@ using OpenCvSharp.Extensions;
 using OpenCvSharp.WpfExtensions;
 using OpencvsharpModule.Common;
 using Prism.Commands;
-using System.Collections.Generic;
+
 using System.Linq;
+using System.Text;
 using ZXing;
 
 namespace OpencvsharpModule.Models
 {
     public partial class CameraModel
     {
-        //private opencvcli.GOCW gocw;
+        private opencvcli.GOCW gocw;
 
         private void LoadAutoRun()
         {
             AutoRunList.Add("无处理", mat => Dst = mat);
-            //AutoRunList.Add("微信二维码", mat =>
-            //{
-            //    if (AutoRunning) return;
-            //    try
-            //    {
-            //        AutoRunning = true;
-
-            //        Dst = gocw.weChatQRCode(mat.Clone());
-            //    }
-            //    finally
-            //    {
-            //        AutoRunning = false;
-            //    }
-            //});
-            //AutoRunList.Add("条码", mat =>
-            //{
-            //    if (AutoRunning) return;
-            //    try
-            //    {
-            //        AutoRunning = true;
-            //        Dst = gocw.DeBarcode(mat.Clone());
-            //    }
-            //    finally
-            //    {
-            //        AutoRunning = false;
-            //    }
-            //});
-
-            //AutoRunList.Add("条码 + zxing", mat =>
-            //{
-            //    if (AutoRunning) return;
-            //    try
-            //    {
-            //        AutoRunning = true;
-            //        Dst = mat.Clone();
-            //        var boxes = gocw.FindBarcode(Dst);
-
-            //        foreach (var box in boxes)     //条码盒子
-            //        {
-            //            Mat mask = Dst.EmptyClone() * 0;
-
-            //            RotatedRect boxDilation = Cv2.MinAreaRect(box);
-            //            Point2f[] boxRectPoints = new Point2f[3] {
-            //                new(0, 0), new Point2f(0,boxDilation.Size.Height) , new(boxDilation.Size.Width,boxDilation.Size.Height)};
-
-            //            Mat m = Cv2.GetAffineTransform(boxDilation.Points(), boxRectPoints);
-            //            Mat codeImg = new();
-            //            Cv2.WarpAffine(Dst, codeImg, m, new(boxDilation.Size.Width, boxDilation.Size.Height), InterpolationFlags.Linear);
-            //            if (codeImg.Height > codeImg.Width)
-            //            {
-            //                Cv2.Transpose(codeImg, codeImg);
-            //                Cv2.Flip(codeImg, codeImg, FlipMode.Y);
-            //            }
-            //            //识别
-            //            bool reDecode = false;
-            //        ReDecode:
-            //            codeImg.GetGray(out Mat itemGray);
-            //            System.Drawing.Bitmap bitmap = BitmapConverter.ToBitmap(itemGray);
-            //            BarcodeReader reader = new BarcodeReader();
-            //            reader.Options.CharacterSet = "UTF-8";
-            //            Result result = reader.Decode(bitmap);
-
-            //            //识别失败转180再识别一次
-            //            if (result == null && reDecode == false)
-            //            {
-            //                reDecode = true;
-            //                Cv2.Flip(codeImg, codeImg, FlipMode.XY);
-            //                goto ReDecode;
-            //            }
-            //            Dst.GetBgr(out Mat bgr);
-
-            //            Dst = bgr;
-            //            if (result != null)
-            //            {
-            //                Dst.PutText(result.Text + " : " + result.BarcodeFormat, boxDilation.Center.ToPoint(), HersheyFonts.HersheyDuplex, 1d, Scalar.Red);
-            //                Dst.DrawRotatedRect(boxDilation, Scalar.Lime, 3);
-            //            }
-            //            else
-            //            {
-            //                Dst.DrawRotatedRect(boxDilation, Scalar.Red, 3);
-            //            }
-
-            //        }
-            //    }
-            //    finally
-            //    {
-            //        AutoRunning = false;
-            //    }
-            //});
-            AutoRunList.Add("二维码", mat =>
+            AutoRunList.Add("Datamatrix", mat =>
             {
                 if (AutoRunning) return;
                 try
                 {
                     AutoRunning = true;
-
                     Dst = mat.Clone();
-                    QRCodeDetector qRCD = new QRCodeDetector();
-                    var qr = qRCD.DetectAndDecode(Dst, out Point2f[] codePoints);
+                    Dst.GetGray(out Mat gray);
+                    var boxes = gocw.GetDM(gray,2000);
 
-                    if (codePoints.Length > 0)
+                    foreach (var box in boxes)
                     {
-                        Dst.DrawPolygon(codePoints);
-                        if (qr.Length > 0)
-                        {
-                            RotatedRect boxDilation = Cv2.MinAreaRect(codePoints);
-                            Dst.PutText(qr, boxDilation.Center.ToPoint(), HersheyFonts.HersheyDuplex, 1d, Scalar.Red);
-                        }
+                        var code = box.Item1;
+                        var point = box.Item2[0];
+                        Dst.PutText(code , point, HersheyFonts.HersheyDuplex, 1d, Scalar.Red);
                     }
                 }
                 finally
@@ -132,44 +40,89 @@ namespace OpencvsharpModule.Models
                     AutoRunning = false;
                 }
             });
-            AutoRunList.Add("二维码 + zxing", mat =>
+
+            AutoRunList.Add("微信二维码", mat =>
             {
                 if (AutoRunning) return;
                 try
                 {
                     AutoRunning = true;
 
-                    Src.GetBgr(out Dst);
+                    Dst = gocw.weChatQRCode(mat.Clone());
+                }
+                finally
+                {
+                    AutoRunning = false;
+                }
+            });
+            AutoRunList.Add("条码", mat =>
+            {
+                if (AutoRunning) return;
+                try
+                {
+                    AutoRunning = true;
+                    Dst = gocw.DeBarcode(mat.Clone());
+                }
+                finally
+                {
+                    AutoRunning = false;
+                }
+            });
 
-                    //找
-                    QRCodeDetector qRCD = new QRCodeDetector();
-                    var getDone = qRCD.Detect(Dst, out Point2f[] codePoints);
+            AutoRunList.Add("条码 + zxing", mat =>
+            {
+                if (AutoRunning) return;
+                try
+                {
+                    AutoRunning = true;
+                    Dst = mat.Clone();
+                    var boxes = gocw.FindBarcode(Dst);
 
-                    //找到
-                    if (codePoints.Length > 0)
+                    foreach (var box in boxes)     //条码盒子
                     {
-                        //处理码区，
-                        RotatedRect boxDilation = Cv2.MinAreaRect(codePoints);
-                        boxDilation.Size = new Size2f(boxDilation.Size.Width * 1.2, boxDilation.Size.Height * 1.2);
+                        Mat mask = Dst.EmptyClone() * 0;
+
+                        RotatedRect boxDilation = Cv2.MinAreaRect(box);
+                        boxDilation.Size = new(boxDilation.Size.Width, boxDilation.Size.Height * 1.8); ;
                         Point2f[] boxRectPoints = new Point2f[3] {
-                                       new(0, 0), new Point2f(0,boxDilation.Size.Height) , new(boxDilation.Size.Width,boxDilation.Size.Height)};
+                            new(0, 0), new Point2f(0,boxDilation.Size.Height) , new(boxDilation.Size.Width,boxDilation.Size.Height)};
 
                         Mat m = Cv2.GetAffineTransform(boxDilation.Points(), boxRectPoints);
                         Mat codeImg = new();
                         Cv2.WarpAffine(Dst, codeImg, m, new(boxDilation.Size.Width, boxDilation.Size.Height), InterpolationFlags.Linear);
-
-                        codeImg.GetGray(out Mat gray);
-                        System.Drawing.Bitmap bitmap = BitmapConverter.ToBitmap(gray);
+                        if (codeImg.Height > codeImg.Width)
+                        {
+                            Cv2.Transpose(codeImg, codeImg);
+                            Cv2.Flip(codeImg, codeImg, FlipMode.Y);
+                        }
+                        //识别
+                        bool reDecode = false;
+                    ReDecode:
+                        codeImg.GetGray(out Mat itemGray);
+                        System.Drawing.Bitmap bitmap = BitmapConverter.ToBitmap(itemGray);
                         BarcodeReader reader = new BarcodeReader();
                         reader.Options.CharacterSet = "UTF-8";
-                        var result = reader.Decode(bitmap);
-                        if (result is not null)
-                        {
-                            Dst.PutText(result.Text, boxDilation.Center.ToPoint(), HersheyFonts.HersheyDuplex, 1d, Scalar.Red);
-                        }
+                        Result result = reader.Decode(bitmap);
 
-                        //画框
-                        Dst.DrawPolygon(codePoints);
+                        //识别失败转180再识别一次
+                        if (result == null && reDecode == false)
+                        {
+                            reDecode = true;
+                            Cv2.Flip(codeImg, codeImg, FlipMode.XY);
+                            goto ReDecode;
+                        }
+                        Dst.GetBgr(out Mat bgr);
+
+                        Dst = bgr;
+                        if (result != null)
+                        {
+                            Dst.PutText(result.Text + " : " + result.BarcodeFormat, boxDilation.Center.ToPoint(), HersheyFonts.HersheyDuplex, 1d, Scalar.Red);
+                            Dst.DrawRotatedRect(boxDilation, Scalar.Lime, 3);
+                        }
+                        else
+                        {
+                            Dst.DrawRotatedRect(boxDilation, Scalar.Red, 3);
+                        }
                     }
                 }
                 finally
@@ -177,34 +130,85 @@ namespace OpencvsharpModule.Models
                     AutoRunning = false;
                 }
             });
-            AutoRunList.Add("zxing", mat =>
+            AutoRunList.Add("条码 + zbar", mat =>
             {
                 if (AutoRunning) return;
                 try
                 {
                     AutoRunning = true;
+                    Dst = mat.Clone();
+                    var boxes = gocw.FindBarcode(Dst);
 
-                    Src.GetBgr(out Dst);
-
-                    Dst.GetGray(out Mat gray);
-                    System.Drawing.Bitmap bitmap = BitmapConverter.ToBitmap(gray);
-                    BarcodeReader reader = new BarcodeReader();
-                    reader.Options.CharacterSet = "UTF-8";
-                    var result = reader.Decode(bitmap);
-                    if (result is not null)
+                    foreach (var box in boxes)     //条码盒子
                     {
-                        List<Point2f> codePoints = new();
-                        foreach (var resultPoint in result.ResultPoints)
+                        Mat mask = Dst.EmptyClone() * 0;
+
+                        RotatedRect boxDilation = Cv2.MinAreaRect(box);
+
+                        Point2f[] boxRectPoints = new Point2f[3] {
+                            new(0, 0), new Point2f(0,boxDilation.Size.Height) , new(boxDilation.Size.Width,boxDilation.Size.Height)};
+
+                        Mat m = Cv2.GetAffineTransform(boxDilation.Points(), boxRectPoints);
+                        Mat codeImg = new();
+                        Cv2.WarpAffine(Dst, codeImg, m, new(boxDilation.Size.Width, boxDilation.Size.Height), InterpolationFlags.Linear);
+                        if (codeImg.Height > codeImg.Width)
                         {
-                            codePoints.Add(new(resultPoint.X, resultPoint.Y));
+                            Cv2.Transpose(codeImg, codeImg);
+                            Cv2.Flip(codeImg, codeImg, FlipMode.Y);
                         }
-                        RotatedRect boxDilation = Cv2.MinAreaRect(codePoints);
+                        //识别
 
-                        Dst.PutText(result.Text, boxDilation.Center.ToPoint(), HersheyFonts.HersheyDuplex, 1d, Scalar.Red);
-                        Dst.DrawPolygon(codePoints.ToArray());
+                        codeImg.GetGray(out Mat itemGray);
+                        bool reDecode = false;
+                    ReDecode:
+                        var barcodes = gocw.zbarDeBarcode(itemGray);
+                        //识别失败转180再识别一次
+                        if (barcodes.Count == 0 && reDecode == false)
+                        {
+                            reDecode = true;
+                            Cv2.Flip(codeImg, codeImg, FlipMode.XY);
+                            goto ReDecode;
+                        }
+
+                        if (barcodes.Count == 0)
+
+                        {
+                            if (boxDilation.Size.Width > boxDilation.Size.Height)
+                                boxDilation.Size = new(boxDilation.Size.Width * 1.3, boxDilation.Size.Height * 1.8);
+                            else
+                                boxDilation.Size = new(boxDilation.Size.Width * 1.8, boxDilation.Size.Height * 1.3);
+
+                            boxRectPoints = new Point2f[3] {
+                            new(0, 0), new Point2f(0,boxDilation.Size.Height) , new(boxDilation.Size.Width,boxDilation.Size.Height)};
+
+                            m = Cv2.GetAffineTransform(boxDilation.Points(), boxRectPoints);
+
+                            Cv2.WarpAffine(Dst, codeImg, m, new(boxDilation.Size.Width, boxDilation.Size.Height), InterpolationFlags.Linear);
+
+                            if (codeImg.Height > codeImg.Width)
+                            {
+                                Cv2.Transpose(codeImg, codeImg);
+                                Cv2.Flip(codeImg, codeImg, FlipMode.Y);
+                            }
+                            codeImg.GetGray(out itemGray);
+
+                            barcodes = gocw.zbarDeBarcode(itemGray);
+                        }
+
+                        Dst.GetBgr(out Mat bgr);
+
+                        Dst = bgr;
+                        if (barcodes.Count != 0)
+                        {
+                            var barcode = barcodes.FirstOrDefault();
+                            Dst.PutText(barcode.Key + " : " + barcode.Value, boxDilation.Center.ToPoint(), HersheyFonts.HersheyDuplex, 1d, Scalar.Red);
+                            Dst.DrawRotatedRect(boxDilation, Scalar.Lime, 3);
+                        }
+                        else
+                        {
+                            Dst.DrawRotatedRect(boxDilation, Scalar.Red, 3);
+                        }
                     }
-
-                    //画框
                 }
                 finally
                 {
@@ -567,6 +571,26 @@ namespace OpencvsharpModule.Models
                     AutoRunning = false;
                 }
             });
+            AutoRunList.Add("PaddleOCR", mat =>
+            {
+                if (AutoRunning) return;
+                try
+                {
+                    AutoRunning = true;
+                    mat.GetBgr(out Dst);
+                    var strsboxes = gocw.GetOCR(Dst);
+
+                    foreach (var item in strsboxes)
+                    {
+                        Rect rect = Cv2.BoundingRect(item.Item2);
+                        Dst.PutTextZh(item.Item1 + ":" + item.Item3.ToString("F2"), rect, FontSize);
+                    }
+                }
+                finally
+                {
+                    AutoRunning = false;
+                }
+            });
             AutoRun = AutoRunList.FirstOrDefault();
         }
 
@@ -598,7 +622,7 @@ namespace OpencvsharpModule.Models
                 if (Pool.SelectImage.HasValue && !Pool.SelectImage.Value.Value.Empty())
                 {
                     Src = Pool.SelectImage.Value.Value;
- 
+
                     Mat gammaImage = new();
                     Src.ConvertTo(gammaImage, MatType.CV_64F);
                     gammaImage = gammaImage.Pow(_Gamma);

@@ -150,7 +150,7 @@ namespace ModuleCore.UserControls
             isMouseLeftButtonDown = false;
         }
 
-        private RectROI ROItemp = new();
+        private RectDraw ROItemp = new();
 
         private void Img_MouseMove1(object sender, MouseEventArgs e)
         {

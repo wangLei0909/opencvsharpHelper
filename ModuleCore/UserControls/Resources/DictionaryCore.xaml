@@ -33,6 +33,24 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style x:Key="OnlySizeStyle" TargetType="ContentControl">
+        <Setter Property="MinHeight" Value="50" />
+        <Setter Property="MinWidth" Value="50" />
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContentControl">
+                    <Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+                        <!--  移动  -->
+                        <s:MoveThumb Cursor="SizeAll" Template="{StaticResource MoveThumbTemplate}" />
+                        <ContentPresenter Margin="{TemplateBinding Padding}" Content="{TemplateBinding ContentControl.Content}" />
+                        <s:DesignerItemDecorator x:Name="ItemDecorator" ShowDecorator="True" />
+                    </Grid>
 
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 </ResourceDictionary>

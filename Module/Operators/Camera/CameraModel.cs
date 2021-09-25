@@ -24,7 +24,7 @@ namespace OpencvsharpModule.Models
     {
         public CameraModel(IEventAggregator ea, IContainerExtension container)
         {
-            // gocw = container.Resolve<opencvcli.GOCW>();
+            gocw = container.Resolve<opencvcli.GOCW>();
 
             HikrobotCameras = new MVSCameras();
             BaslerCameras = new BaslerCameras();
@@ -195,7 +195,7 @@ namespace OpencvsharpModule.Models
             if (!Pool.SelectImage.HasValue) return;
             Src = Pool.SelectImage.Value.Value;
             if (Src is null || Src.Empty()) return;
-
+            GC.Collect();
             AutoRunsw.Restart();
             AutoRun.Value.Invoke(Src);
             AutoRunsw.Stop();

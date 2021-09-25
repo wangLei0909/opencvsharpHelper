@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using ModuleCore.Common.Authority;
 
 namespace ModuleCore.Views
 {

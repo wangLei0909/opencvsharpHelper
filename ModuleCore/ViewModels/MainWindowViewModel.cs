@@ -16,6 +16,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
+using ModuleCore.Common.Authority;
 
 namespace ModuleCore.ViewModels
 {
@@ -222,7 +223,7 @@ namespace ModuleCore.ViewModels
             });
         }
 
-        private void ShowNavigateMenu(ModuleCore.Common.Authority authority)
+        private void ShowNavigateMenu(Authority authority)
         {
             Navigate.NavigateShowList.Clear();
 

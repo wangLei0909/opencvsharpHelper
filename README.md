@@ -29,13 +29,15 @@ NLog  https://nlog-project.org/?r=redirect
 ![avatar](runtimes.jpg),
 
 海康SDK（如果已经安装MVS就不需要下载）:
+
 链接：https://pan.baidu.com/s/1BZ_flwm3OjcG6-5XpflzTw 
 提取码：yiji
 
 
 Basler:（如果已经安装pylon就不需要下载）：
+
 链接：https://pan.baidu.com/s/1VkwENHA7wusdosoKpaFpBw 
-提取码：yiji 
+提取码：yiji
 
 
 ## opnecvcli分支
@@ -47,11 +49,12 @@ opnecvcli分支演示了把opencv包装成c++/cli的方法，实现opencv和open
 
 https://blog.csdn.net/tfarcraw/article/details/115561759?spm=1001.2014.3001.5501
 
-这个分支目前演示了以下功能：
+opencv 4.5.2运行时(也可以自己编译）：
 
-微信二维码  https://mp.weixin.qq.com/s/pphBiEX099ZkDV0hWwnbhw
+链接：https://pan.baidu.com/s/1TQnZJrvFYk8AqoDgZFRBaA 
+提取码：yiji
 
-条码识别 https://mp.weixin.qq.com/s/odrdAlfAOmNfYitRJ-k6uQ
+zbarX64运行时:
 
 PaddleOCR
 https://blog.csdn.net/tfarcraw/article/details/117902521?spm=1001.2014.3001.5501
