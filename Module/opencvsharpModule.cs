@@ -32,7 +32,6 @@ namespace OpencvsharpModule
             containerRegistry.RegisterSingleton<CameraModel>();
             containerRegistry.RegisterSingleton<ImagePool>();
             containerRegistry.RegisterSingleton<DataPool>();
-            containerRegistry.RegisterSingleton<opencvcli.GOCW>();
             containerRegistry.RegisterSingleton<RoslynEditorModel>();
 
             containerRegistry.RegisterDialog<CalibrateView, ViewModels.CalibrateViewModel>();

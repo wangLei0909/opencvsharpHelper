@@ -16,7 +16,6 @@
     <PackageReference Include="ZXing.Net" Version="0.16.6" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\opencvcli\opencvcli.vcxproj" />
     <ProjectReference Include="..\ModuleCore\ModuleCore.csproj" />
     <ProjectReference Include="..\MvvmTextEditor\MvvmTextEditor.csproj" />
   </ItemGroup>

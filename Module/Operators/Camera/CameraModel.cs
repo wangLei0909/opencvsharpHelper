@@ -24,7 +24,6 @@ namespace OpencvsharpModule.Models
     {
         public CameraModel(IEventAggregator ea, IContainerExtension container)
         {
-            gocw = container.Resolve<opencvcli.GOCW>();
 
             HikrobotCameras = new MVSCameras();
             BaslerCameras = new BaslerCameras();
@@ -623,7 +622,6 @@ namespace OpencvsharpModule.Models
                 Filter = "图片(*.jpg;*.png;*.jpeg;*.bmp)|*.jpg;*.png;*.jpeg;*.bmp",
                 Title = "Save File"
             };
-            var yuv = new Mat(100, 100, MatType.CV_8UC1, 505050);
             if (saveFileDialog.ShowDialog() == false) return;
             if (string.IsNullOrEmpty(saveFileDialog.FileName)) return;
 
