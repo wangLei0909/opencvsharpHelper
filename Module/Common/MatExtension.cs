@@ -25,8 +25,8 @@ namespace OpencvsharpModule.Common
         }
         public static void FillPolygon(this Mat src, RotatedRect rr)
         {
-            var P = rr.Points().Select(p => new Point(p.X,p.Y)).ToArray();
-            var pp = new Point[1][] { P};
+            var P = rr.Points().Select(p => new Point(p.X, p.Y)).ToArray();
+            var pp = new Point[1][] { P };
             Cv2.FillPoly(src, pp, Scalar.White);
         }
         public static void DrawPolygon(this Mat mat, Point2f[] points, int thickness = 1)
@@ -431,34 +431,43 @@ namespace OpencvsharpModule.Common
 
             return (angelD, magImg);
         }
-
-        public static void PutTextZh(this Mat src, string text, Rect rect, float emSize = 36, System.Drawing.Brush color = null)
+        /// <summary>
+        /// 画中文
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="text"></param>
+        /// <param name="point"></param>
+        /// <param name="emSize"></param>
+        /// <param name="color"></param>
+        public static void PutTextZh(this Mat src, string text,Point point, float emSize = 36, System.Drawing.Brush color = null)
         {
+            if (string.IsNullOrEmpty(text)) return ;
             color ??= System.Drawing.Brushes.Lime;
             var font = new System.Drawing.Font(new System.Drawing.FontFamily("微软雅黑"), emSize);
-            if (rect.Width  == 0 ) rect.Width = 10;
-            if (rect.Height == 0 ) rect.Height = 10;
 
-            if (rect.Width > src.Width) rect.Width = src.Width;
-            if (rect.Height > src.Height) rect.Height = src.Height;
-            if (rect.Width + rect.Left > src.Width) rect.Left = 0;
-            if (rect.Height + rect.Top > src.Height) rect.Top = 0;
-            var bitmap = src[rect].DrawText(text, font, color);
+
+            var  bitmap = src[0,1,0,1].ToBitmap();
+            var graphics = System.Drawing.Graphics.FromImage(bitmap);
+ 
+            var size = graphics.MeasureString(text, font).ToSize();
+            graphics.Dispose();
+            bitmap.Dispose();
+
+            var rect = new Rect {Left=point.X,Width=size.Width,Top = point.Y,Height=size.Height };
+            rect.Height = rect.Bottom > src.Height ? src.Height - rect.Y : rect.Height;
+            rect.Width = rect.Right > src.Width ? src.Width - rect.X : rect.Width;
+            bitmap = src[rect].ToBitmap();
+            graphics = System.Drawing.Graphics.FromImage(bitmap);
+            graphics.DrawString(text, font, color, new System.Drawing.PointF(0, 0));
+            graphics.Flush();
+            graphics.Dispose();
             src[rect] = bitmap.ToMat();
+
             bitmap.Dispose();
             font.Dispose();
         }
 
-        private static System.Drawing.Bitmap DrawText(this Mat mat, string str, System.Drawing.Font font, System.Drawing.Brush color)
-        {
 
-            System.Drawing.Bitmap bitmap = mat.ToBitmap();
-            System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(bitmap);
-            graphics.DrawString(str, font, color, new System.Drawing.PointF(0, 0));
-            graphics.Flush();
-            graphics.Dispose();
-            return bitmap;
-        }
 
         public static Point GetCenter(this Mat src) => new(src.Width / 2, src.Height / 2);
     }

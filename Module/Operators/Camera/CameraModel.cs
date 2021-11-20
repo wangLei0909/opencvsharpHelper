@@ -675,22 +675,13 @@ namespace OpencvsharpModule.Models
             Src = Pool.SelectImage.Value.Value;
             if (Src is null || Src.Empty()) return;
             Dst = Src.Clone();
-            if (string.IsNullOrEmpty(Text)) return;
-            if (Pool.ROILeft + Pool.ROIWidth > Src.Width || Pool.ROITop + Pool.ROIHeight > Src.Height)
-            {
-                Pool.ROILeft = 0;
-                Pool.ROIWidth = Src.Width;
-                Pool.ROITop = 0;
-                Pool.ROIHeight = Src.Height;
-            }
-            Rect rect = new(Pool.ROILeft, Pool.ROITop, Pool.ROIWidth, Pool.ROIHeight);
-            AutoRunsw.Restart();
-            Dst.PutTextZh(Text, rect,FontSize);
 
+            AutoRunsw.Restart();
+            Dst.PutTextZh(Text, new Point(Pool.ROILeft, Pool.ROITop), FontSize);
             AutoRunsw.Stop();
             CT = AutoRunsw.ElapsedMilliseconds;
-
             ImgDst = WriteableBitmapConverter.ToWriteableBitmap(Dst);
+            Dst.Dispose();
         }
 
         private float _FontSize = 24;
