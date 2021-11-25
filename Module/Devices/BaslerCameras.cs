@@ -22,11 +22,11 @@ namespace OpencvsharpModule.Devices
         [HandleProcessCorruptedStateExceptions]
         async public void InitCameras(int needNum = 0)
         {  // 获取所有相机信息
-            int deviceNum = 0;  
+            int deviceNum = 0;
             GC.Collect();
             do
             {
-              try
+                try
                 {
                     allCameraInfo = CameraFinder.Enumerate(); deviceNum = allCameraInfo.Count;
                     if (deviceNum < needNum)
@@ -63,8 +63,9 @@ namespace OpencvsharpModule.Devices
                 var type = mCamera.CameraInfo[CameraInfoKey.VendorName];
                 var ip = mCamera.CameraInfo[CameraInfoKey.DeviceIpAddress];
                 CameraListChanged?.Invoke(type + ";" + ip);
-                LoadConfig();
+
             }
+            LoadConfig();
         }
 
         public void LoadConfig()
