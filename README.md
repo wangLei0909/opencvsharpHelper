@@ -10,13 +10,15 @@ https://blog.csdn.net/tfarcraw/article/details/108028209?spm=1001.2014.3001.5501
  
 OpenCvSharp  https://github.com/shimat/opencvsharp
 
-Prism    https://prismlibrary.com/
+Prism    https://prismlibrary.com/     一个非常易用的框架， 帮助我们方便地实现松耦合
+
+Natasha  https://github.com/dotnetcore/Natasha 基于 Roslyn 的 C# 动态程序集构建库，让程序拥有强大的脚本功能
 
 Material Design In XAML Toolkit   http://www.materialdesigninxaml.net/   
 
 Newtonsoft Json.NET  http://www.materialdesigninxaml.net/
 
-NLog  https://nlog-project.org/?r=redirect
+NLog  https://nlog-project.org/?r=redirect 
 
 
 交流QQ群：827888895  进群暗号：shimat
@@ -61,6 +63,3 @@ https://blog.csdn.net/tfarcraw/article/details/117902521?spm=1001.2014.3001.5501
 
 libdmtx Datamatrix解码
 
-### opnecvcli分支不免费开源，为本项目贡献代码或捐助本项目后可获得源码。如有需要请联系QQ:123211521 微信17551023102
-
-<img src="juanzeng.png" width="30%">
