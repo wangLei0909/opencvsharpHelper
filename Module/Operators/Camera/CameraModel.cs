@@ -645,11 +645,15 @@ namespace OpencvsharpModule.Models
                 try
                 {
                     Src = Cv2.ImRead(ofd.FileName);
-                    UpdateSrc();
+                    if(!Src.Empty())
+                        UpdateSrc();
+                    else
+                        ShowError("不支持的图像格式");
                 }
                 catch (Exception ex)
                 {
                     NLogService.Error(ex.Message);
+                   
                 }
             }
         }
