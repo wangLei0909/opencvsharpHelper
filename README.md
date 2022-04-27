@@ -4,7 +4,7 @@ https://blog.csdn.net/tfarcraw/article/details/108028209?spm=1001.2014.3001.5501
  ![avatar](main.jpg)
  
 
-目标框架：.NET5.0
+目标框架：.NET6.0
 
 使用到的开源组件：
  
