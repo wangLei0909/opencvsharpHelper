@@ -135,7 +135,7 @@
                 </StackPanel>
             </materialDesign:PopupBox>
             <!--  最小化  -->
-            <Button
+            <Button Style="{StaticResource MaterialDesignFlatLightButton}" 
                 Grid.Column="1"
                 Width="40"
                 Height="40"
@@ -147,7 +147,7 @@
                 <materialDesign:PackIcon Kind="Minus" />
             </Button>
             <!--  最大化  -->
-            <Button
+            <Button Style="{StaticResource MaterialDesignFlatLightButton}" 
                 Name="btnMaximize"
                 Grid.Column="2"
                 Width="40"
@@ -161,7 +161,7 @@
                 <materialDesign:PackIcon Kind="WindowMaximize" />
             </Button>
             <!--  普通  -->
-            <Button
+            <Button Style="{StaticResource MaterialDesignFlatLightButton}" 
                 Name="btnNormal"
                 Grid.Column="2"
                 Width="40"
@@ -175,7 +175,7 @@
                 <materialDesign:PackIcon Kind="WindowRestore" />
             </Button>
             <!--  关闭  -->
-            <Button
+            <Button Style="{StaticResource MaterialDesignFlatLightButton}" 
                 Grid.Column="3"
                 Width="40"
                 Height="40"
