@@ -19,7 +19,7 @@ namespace OpencvsharpModule.Devices
         /// ch:枚举 GIGE 设备 | en:Enum GIGE device
         /// </summary>
         /// <param name="needNum">指定需要发现的相机的数量</param>
-        [HandleProcessCorruptedStateExceptions]
+   
 
         public async void InitCameras(int needNum)
         {

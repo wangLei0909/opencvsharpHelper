@@ -18,8 +18,6 @@ namespace OpencvsharpModule.Devices
             AppDomain.CurrentDomain.ProcessExit += OnExit;
         }
 
-
-        [HandleProcessCorruptedStateExceptions]
         async public void InitCameras(int needNum = 0)
         {  // 获取所有相机信息
             int deviceNum = 0;
