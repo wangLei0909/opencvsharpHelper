@@ -17,14 +17,6 @@
     prism:ViewModelLocator.AutoWireViewModel="True"
     Background="White"
     mc:Ignorable="d">
-    <UserControl.Resources>
-        <Style TargetType="TextBox" />
-        <Style TargetType="Button" />
-        <Style TargetType="ComboBox" />
-        <Style TargetType="TextBlock" />
-        <Style TargetType="Slider" />
-        <ivc:VisibilityConverter x:Key="isDisplay" />
-    </UserControl.Resources>
     <Grid>
         <imageview:ImageView ImageSource="{Binding Pool.ImgSrc}" />
         <Grid Height="20" VerticalAlignment="Bottom"   >

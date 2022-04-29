@@ -5,6 +5,12 @@
     xmlns:local="clr-namespace:opencvsharphelper"
     xmlns:prism="http://prismlibrary.com/">
     <Application.Resources>
-
+        <Style TargetType="TextBox" />
+        <Style TargetType="Button" />
+        <Style TargetType="ComboBox" />
+        <Style TargetType="TextBlock" />
+        <Style TargetType="Slider" />
+        <Style TargetType="TabItem" />
+        <Style TargetType="TabControl" />
     </Application.Resources>
 </prism:PrismApplication>

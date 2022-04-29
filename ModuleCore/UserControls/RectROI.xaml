@@ -146,9 +146,9 @@
             </Setter>
         </Style>
         <Style x:Key="ThumbStyleCircle" TargetType="{x:Type Thumb}">
-            <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
-            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Thumb}">
@@ -159,7 +159,7 @@
                                 <Border Background="{TemplateBinding Background}" Margin="2"/>
                             </Grid>
                         </Border>-->
-                        <Ellipse Fill="{TemplateBinding Background}"   />
+                        <Ellipse Fill="{TemplateBinding Background}" />
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -190,7 +190,7 @@
                 </ContextMenu>
             </Thumb.ContextMenu>
         </Thumb>
-        <Thumb Style="{DynamicResource ThumbStyleCircle}"
+        <Thumb
             x:Name="thumb_Size"
             Canvas.Left="195"
             Canvas.Top="195"
@@ -198,6 +198,7 @@
             Height="10"
             Background="Fuchsia"
             Cursor="SizeNWSE"
-            DragDelta="Size_DragDelta" />
+            DragDelta="Size_DragDelta"
+            Style="{DynamicResource ThumbStyleCircle}" />
     </Canvas>
 </UserControl>

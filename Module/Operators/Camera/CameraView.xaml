@@ -15,16 +15,7 @@
     prism:ViewModelLocator.AutoWireViewModel="True"
     Background="White"
     mc:Ignorable="d">
-    <UserControl.Resources>
-        <Style TargetType="TextBox" />
-        <Style TargetType="Button" />
-        <Style TargetType="ComboBox" />
-        <Style TargetType="TextBlock" />
-
-    </UserControl.Resources>
     <Grid>
-
-
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="20" />
@@ -349,7 +340,7 @@
                     Text="{Binding Model.CameraIndex}" />
                 <TextBlock Margin="5,0" Text="摄像头API：" />
                 <ComboBox
-                    Width="80"
+                    Width="130"
                     DisplayMemberPath="Key"
                     ItemsSource="{Binding Model.VideoCaptureAPIsList}"
                     SelectedItem="{Binding Model.VideoCaptureAPI}" />
@@ -357,7 +348,7 @@
 
                 <TextBlock Margin="5,0,0,0" Text="分辨率:" />
                 <ComboBox
-                    Width="80"
+                    Width="100"
                     ItemsSource="{Binding Model.CaptureModeList}"
                     SelectedItem="{Binding Model.CaptureMode}" />
                 <Button
