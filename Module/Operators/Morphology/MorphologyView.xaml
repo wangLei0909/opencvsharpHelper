@@ -16,12 +16,13 @@
     prism:ViewModelLocator.AutoWireViewModel="True"
     Background="White"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <ivc:VisibilityConverter x:Key="isDisplay" />
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="160" />
-
-
         </Grid.RowDefinitions>
         <Grid>
             <Grid.RowDefinitions>
