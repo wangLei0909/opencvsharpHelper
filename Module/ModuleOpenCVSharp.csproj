@@ -16,6 +16,10 @@
     <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.5.5.20211231" />
     <PackageReference Include="OpenCvSharp4.WpfExtensions" Version="4.5.5.20211231" />
     <PackageReference Include="Prism.Wpf" Version="8.1.97" />
+    <PackageReference Include="Sdcb.PaddleInference" Version="2.2.2" />
+    <PackageReference Include="Sdcb.PaddleInference.runtime.win64.mkl" Version="2.2.2" />
+    <PackageReference Include="Sdcb.PaddleOCR" Version="2.2.2" />
+    <PackageReference Include="Sdcb.PaddleOCR.KnownModels" Version="2.2.2.1" />
     <PackageReference Include="ZXing.Net" Version="0.16.8" />
   </ItemGroup>
   <ItemGroup>
@@ -596,6 +600,36 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Common\opencv452\opencv_xphoto452d.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Common\ppocr-v2\cls\inference.pdiparams">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Common\ppocr-v2\cls\inference.pdiparams.info">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Common\ppocr-v2\cls\inference.pdmodel">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Common\ppocr-v2\det\inference.pdiparams">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Common\ppocr-v2\det\inference.pdiparams.info">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Common\ppocr-v2\det\inference.pdmodel">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Common\ppocr-v2\key.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Common\ppocr-v2\rec\inference.pdiparams">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Common\ppocr-v2\rec\inference.pdiparams.info">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Common\ppocr-v2\rec\inference.pdmodel">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Common\wechat_qrcode\detect.caffemodel">

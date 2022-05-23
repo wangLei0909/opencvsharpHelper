@@ -5,7 +5,12 @@ using OpenCvSharp.WpfExtensions;
 using OpencvsharpModule.Common;
 using Prism.Commands;
 
+using Sdcb.PaddleOCR.KnownModels;
+using Sdcb.PaddleOCR;
+
+using System;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using ZXing;
 
@@ -369,6 +374,39 @@ namespace OpencvsharpModule.Models
                             Cv2.Line(Dst, new(512 - len, i), new(511, i), Scalar.White);
                         }
                     }
+                }
+                finally
+                {
+                    AutoRunning = false;
+                }
+            });
+            //https://github.com/sdcb/PaddleSharp
+            AutoRunList.Add("PaddleSharp", src =>
+            {
+                if (AutoRunning) return;
+                try
+                {
+                    OCRModel model = KnownOCRModel.PPOcrV2;
+                    model.EnsureAll();
+                    string root = model.RootDirectory;
+                    string key = model.KeyPath;
+
+                    using PaddleOcrAll all = new PaddleOcrAll("Common/ppocr-v2", "Common/ppocr-v2/key.txt")
+                    {
+                        AllowRotateDetection = true, /* 允许识别有角度的文字 */
+                        Enable180Classification = false, /* 允许识别旋转角度大于90度的文字 */
+                    };
+
+                    PaddleOcrResult result = all.Run(src);
+                    //Console.WriteLine("Detected all texts: \n" + result.Text);
+                    Dst = src.Clone();
+                    foreach (PaddleOcrResultRegion region in result.Regions)
+                    {
+                        Dst.DrawRotatedRect(region.Rect, Scalar.Lime);
+                        Dst.PutTextZh(region.Text, (Point)region.Rect.Center, FontSize);
+                        // Console.WriteLine($"Text: {region.Text}, Score: {region.Score}, RectCenter: {region.Rect.Center}, RectSize:    {region.Rect.Size}, Angle: {region.Rect.Angle}");
+                    }
+                    
                 }
                 finally
                 {

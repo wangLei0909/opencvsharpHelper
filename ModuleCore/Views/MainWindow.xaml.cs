@@ -85,10 +85,10 @@ namespace ModuleCore.Views
         /// </summary>
         private void BtnMaximize_Click(object sender, RoutedEventArgs e)
         {
-            if (this.Left == rcWorkArea.Left && this.Top == rcWorkArea.Top
-                    && this.ActualHeight >= SystemParameters.WorkArea.Height
-                    && this.ActualWidth >= SystemParameters.WorkArea.Width)
-                return;
+            //if (this.Left == rcWorkArea.Left && this.Top == rcWorkArea.Top
+            //        && this.ActualHeight >= SystemParameters.WorkArea.Height
+            //        && this.ActualWidth >= SystemParameters.WorkArea.Width)
+            //    return;
 
             //最大化 还原 显示切换
             this.btnMaximize.Visibility = Visibility.Collapsed;
@@ -115,12 +115,18 @@ namespace ModuleCore.Views
         {
             this.MinHeight = rcMin.Height;
             this.MinWidth = rcMin.Width;
-
+           
             this.Left = rcNormal.Left;
             this.Top = rcNormal.Top;
+            if (this.Left == 0) this.Left =2;
+            if (this.Top == 0) this.Top = 2;
+        
             this.Width = rcNormal.Width;
             this.Height = rcNormal.Height;
-
+            if (rcNormal.Width >= rcWorkArea.Width)
+                rcNormal.Width = rcWorkArea.Width - 2;
+            if (rcNormal.Height >= rcWorkArea.Height)
+                rcNormal.Height = rcWorkArea.Height - 2;
             //最大化 还原 图标 切换
             this.btnMaximize.Visibility = Visibility.Visible;
             this.btnNormal.Visibility = Visibility.Collapsed;
