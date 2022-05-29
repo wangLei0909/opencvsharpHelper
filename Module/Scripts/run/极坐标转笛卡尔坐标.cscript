@@ -10,7 +10,7 @@ public class NatashaScript
         Dictionary<string,Mat> matlist = new Dictionary<string,Mat>();	    
  
         Mat recMat = new Mat();
-        var radius = Math.Min(src.Width, src.Height) / 2;
+        var radius = Math.Max(src.Width, src.Height) / 2;
         Cv2.WarpPolar(src, recMat, new Size(radius, Cv2.PI * radius * 2), new Point2f(src.Width / 2, src.Height / 2), radius, InterpolationFlags.Linear, WarpPolarMode.Linear);
         matlist.Add("recMat", recMat);
         return matlist;
