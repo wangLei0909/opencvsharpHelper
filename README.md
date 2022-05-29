@@ -20,6 +20,7 @@ Newtonsoft Json.NET  http://www.materialdesigninxaml.net/
 
 NLog  https://nlog-project.org/?r=redirect 
 
+PaddleSharp https://github.com/sdcb/PaddleSharp
 
 交流QQ群：827888895  进群暗号：shimat
 
