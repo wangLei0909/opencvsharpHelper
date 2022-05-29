@@ -1,0 +1,18 @@
+﻿using System;
+using OpenCvSharp;
+using System.Collections.Generic;
+
+public class NatashaScript
+{
+   static public Dictionary<string,Mat> Run(Mat src)
+    {
+        //添加到列表就能进入图像池
+        Dictionary<string,Mat> matlist = new Dictionary<string,Mat>();	    
+ 
+        Mat recMat = new Mat();
+        var radius = Math.Min(src.Width, src.Height) / 2;
+        Cv2.WarpPolar(src, recMat, new Size(radius, Cv2.PI * radius * 2), new Point2f(src.Width / 2, src.Height / 2), radius, InterpolationFlags.Linear, WarpPolarMode.Linear);
+        matlist.Add("recMat", recMat);
+        return matlist;
+    }
+} 

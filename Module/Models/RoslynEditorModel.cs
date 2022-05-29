@@ -1,10 +1,14 @@
 ﻿using ModuleCore.Mvvm;
+
 using Natasha.CSharp;
+
 using OpenCvSharp;
+
 using Prism.Commands;
 using Prism.Events;
 using Prism.Ioc;
 using Prism.Mvvm;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,13 +34,21 @@ namespace OpencvsharpModule.Models
         {
             //注册+预热组件 , 之后编译会更加快速
             await NatashaInitializer.Initialize();
-            if (!File.Exists(@"./Scripts/run.script"))
-                File.Copy(@"./Scripts/new.script", @"./Scripts/run.script");
-            ScriptCode = File.ReadAllText(@"./Scripts/run.script");
+            if (!File.Exists(@"./Scripts/run/run.cscript"))
+                File.Copy(@"./Scripts/new.cscript", @"./Scripts/run/run.cscript");
+            ScriptCode = File.ReadAllText(@"./Scripts/run/run.cscript");
+            FileName = @"./Scripts/run/run.cscript";
+            DirectoryInfo folder = new DirectoryInfo(@"./Scripts/run");
+
+            foreach (FileInfo file in folder.GetFiles())
+            {
+                Files[file.Name] = file.FullName;
+            }
         }
 
         private AssemblyCSharpBuilder sharpBuilder;
         private Assembly assembly;
+        //已编译
         private bool IsCompiled;
         private string _ScriptCode;
 
@@ -47,8 +59,8 @@ namespace OpencvsharpModule.Models
             {
                 SetProperty(ref _ScriptCode, value);
                 IsCompiled = false;
-                if (!string.IsNullOrEmpty(value))
-                    File.WriteAllText(@"./Scripts/run.script", value);
+                if (!string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(FileName))
+                    File.WriteAllText(FileName, value);
             }
         }
 
@@ -91,7 +103,7 @@ namespace OpencvsharpModule.Models
                 return;
             }
 
-            run:
+        run:
             try
             {
                 //在指定域创建一个 返回图像集 的Func 委托， 把刚才的程序集扔进去，
@@ -101,13 +113,18 @@ namespace OpencvsharpModule.Models
                     return NatashaScript.Run(arg);
                     ");
 
+                var mat = new Mat();
+                if (Pool.SelectImage.HasValue)
+                    mat = Pool.SelectImage.Value.Value;
+
                 //调用委托 返回图像集
-                if (!Pool.SelectImage.HasValue)
+                if (mat.Empty())
                 {
-                    ShowError("源图像不能为空！");
-                    return;
+                    mat = new Mat(new Size(400, 400), MatType.CV_8UC3, Scalar.Black);
+                    Cv2.Circle(mat, new Point(200, 200), 100, Scalar.Red, 5);
                 }
-                var listmat = func.Invoke(Pool.SelectImage.Value.Value);
+
+                var listmat = func.Invoke(mat);
 
                 //把图像集加入池
                 foreach (var item in listmat)
@@ -124,6 +141,74 @@ namespace OpencvsharpModule.Models
             }
         }
 
+
+        private DelegateCommand _Load;
+        public DelegateCommand Load =>
+            _Load ??= new DelegateCommand(ExecuteLoad);
+
+        void ExecuteLoad()
+        {
+            Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog
+            {
+                DefaultExt = ".*",
+                Filter = "脚本文件(*.cscript)|*.cscript;*.txt;"
+            };
+            if (ofd.ShowDialog() == true)
+            {
+                FileName = ofd.FileName;
+
+                ScriptCode = File.ReadAllText(FileName);
+
+            }
+        }
+        private ObservableDictionary<string, string> _Files = new();
+
+        public ObservableDictionary<string, string> Files
+        {
+            get { return _Files; }
+            set { SetProperty(ref _Files, value); }
+        }
+        // 选择的文件
+        private KeyValuePair<string, string>? _SelectFile;
+
+        public KeyValuePair<string, string>? SelectFile
+        {
+            get { return _SelectFile; }
+            set
+            {
+                SetProperty(ref _SelectFile, value);
+                ScriptCode = File.ReadAllText(value.Value.Value);
+                FileName = @"./Scripts/run/run.cscript";
+            }
+        }
+        private string _FileName;
+        public string FileName
+        {
+            get { return _FileName; }
+            set { SetProperty(ref _FileName, value); }
+        }
+
+
+        private DelegateCommand _Save;
+        public DelegateCommand Save =>
+            _Save ??= new DelegateCommand(ExecuteSave);
+
+        void ExecuteSave()
+        {
+            var saveFileDialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Filter = "脚本文件(*.cscript)|*.cscript;",
+                Title = "Save File"
+            };
+            if (saveFileDialog.ShowDialog() == false) return;
+            if (string.IsNullOrEmpty(saveFileDialog.FileName)) return;
+            FileName = saveFileDialog.FileName;
+            // if (!string.IsNullOrEmpty(value))
+            //    File.WriteAllText(@"./Scripts/run.script", value);
+            if (!string.IsNullOrEmpty(ScriptCode))
+                File.WriteAllText(FileName, ScriptCode);
+
+        }
         #endregion Natasha
 
         private readonly IEventAggregator _ea;

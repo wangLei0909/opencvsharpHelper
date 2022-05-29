@@ -46,10 +46,26 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30" />
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="30" />
                     </Grid.RowDefinitions>
                     <StackPanel Orientation="Horizontal">
+
                         <Button
-                            Width="80"
+                            Width="60"
+                            Margin="5"
+                            Command="{Binding Model.Save}">
+                            导出...
+                        </Button>
+                        <Button
+                            Width="60"
+                            Margin="5"
+                            Command="{Binding Model.Load}">
+                            导入...
+                        </Button>
+                        <TextBlock Width="200" Text="{Binding Model.FileName}" />
+
+                        <Button
+                            Width="60"
                             Margin="5"
                             Command="{Binding Model.Run}">
                             运行
@@ -73,6 +89,20 @@
                         </Grid>
 
                     </ScrollViewer>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <TextBlock
+                            Width="85"
+                            VerticalAlignment="Center"
+                            Text="  选择示例： "
+                            TextAlignment="Center" />
+                        <ComboBox
+                            Width="200"
+                            Margin="5,2"
+                            DisplayMemberPath="Key"
+                            ItemsSource="{Binding Model.Files}"
+                            SelectedItem="{Binding Model.SelectFile}" />
+
+                    </StackPanel>
 
                 </Grid>
             </Grid>

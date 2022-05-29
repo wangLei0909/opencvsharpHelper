@@ -1,0 +1,24 @@
+﻿using System;
+using OpenCvSharp;
+using System.Collections.Generic;
+
+public class NatashaScript
+{
+   static public Dictionary<string,Mat> Run(Mat src)
+    {
+        //添加到列表就能进入图像池
+        Dictionary<string,Mat> matlist = new Dictionary<string,Mat>();	    
+        
+        //处理源图像
+        Mat dst = new Mat();
+       	Cv2.BitwiseNot(src, dst);
+        matlist.Add("dst",dst);
+        
+        //测试添加多个
+        Mat circleImg = new Mat(new Size(400, 400), MatType.CV_8UC3, Scalar.Black);
+        Cv2.Circle(circleImg, new Point(200, 200), 100, Scalar.Red, 5);
+        matlist.Add("circleImg",circleImg);
+
+        return matlist;
+    }
+} 
