@@ -2,7 +2,19 @@
 看这篇博客快速了解：
 https://blog.csdn.net/tfarcraw/article/details/108028209?spm=1001.2014.3001.5501
  ![avatar](main.jpg)
- 
+
+ 因为本项目含有子模块，请这样克隆：
+```
+git clone --recurse-submodules https://gitee.com/tfarcraw/opencvsharphelper.git
+```
+
+方法2：
+```
+git clone https://gitee.com/tfarcraw/opencvsharphelper.git
+cd prism-app-demo
+git submodule init
+git submodule update
+```
 
 目标框架：.NET6.0
 
