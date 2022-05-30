@@ -18,7 +18,7 @@
     <PackageReference Include="Prism.Unity" Version="8.1.97" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ModuleCore\ModuleCore.csproj" />
+    <ProjectReference Include="..\Core\src\ModuleCore.csproj" />
     <ProjectReference Include="..\Module\ModuleOpenCVSharp.csproj" />
   </ItemGroup>
   <ItemGroup>

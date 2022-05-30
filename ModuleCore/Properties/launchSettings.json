@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "ModuleCore": {
-      "commandName": "Project",
-      "nativeDebugging": false
-    }
-  }
-}

@@ -23,7 +23,7 @@
     <PackageReference Include="ZXing.Net" Version="0.16.8" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ModuleCore\ModuleCore.csproj" />
+    <ProjectReference Include="..\Core\src\ModuleCore.csproj" />
     <ProjectReference Include="..\MvvmTextEditor\MvvmTextEditor.csproj" />
   </ItemGroup>
   <ItemGroup>
