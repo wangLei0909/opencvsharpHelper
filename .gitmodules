@@ -1,3 +1,3 @@
 [submodule "Core"]
 	path = Core
-	url = git@gitee.com:tfarcraw/module-core.git
+	url = https://github.com/wangLei0909/ModuleCore.git
